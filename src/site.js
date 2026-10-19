@@ -83,6 +83,7 @@
     let lock = 0, idle = 0;
     root.addEventListener('wheel', e => {
       const horiz = Math.abs(e.deltaX) > Math.abs(e.deltaY);
+      if (!horiz) return;                       // up/down scrolls the page to the studio statement
       const d = (horiz ? e.deltaX : e.deltaY) * (e.deltaMode === 1 ? 40 : 1);
       if (!d) return;
       e.preventDefault();
@@ -306,6 +307,90 @@
     addEventListener('resize', () => { if (!root.hidden && !busy) { rect = fitRect(cur); place(rect); } });
   }
 
+  /* ---------- weighted scrolling (desktop mouse and trackpad) ----------
+     The wheel sets a target and the page eases toward it, so scrolling carries a little momentum.
+     Keyboard, scrollbar, touch and anything that scrolls on its own keep native behaviour. */
+  function smoothScroll() {
+    if (reduce || !matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+    const de = document.documentElement;
+    let target = scrollY, cur = scrollY, raf = 0, moving = false;
+    const max = () => de.scrollHeight - innerHeight;
+    const tick = () => {
+      cur += (target - cur) * .11;
+      if (Math.abs(target - cur) < .4) { cur = target; moving = false; raf = 0; }
+      scrollTo(0, cur);
+      if (moving) raf = requestAnimationFrame(tick);
+    };
+    const scrollsItself = el => {
+      for (let n = el; n && n !== document.body && n !== de; n = n.parentElement) {
+        const o = getComputedStyle(n).overflowY;
+        if ((o === 'auto' || o === 'scroll') && n.scrollHeight > n.clientHeight) return true;
+      }
+      return false;
+    };
+    addEventListener('wheel', e => {
+      if (e.defaultPrevented || e.ctrlKey || de.classList.contains('lb-open') || Math.abs(e.deltaX) > Math.abs(e.deltaY) || scrollsItself(e.target)) return;
+      e.preventDefault();
+      if (!moving) target = cur = scrollY;
+      const d = e.deltaY * (e.deltaMode === 1 ? 40 : e.deltaMode === 2 ? innerHeight : 1);
+      target = Math.max(0, Math.min(max(), target + d));
+      moving = true;
+      if (!raf) raf = requestAnimationFrame(tick);
+    }, { passive: false });
+    addEventListener('scroll', () => { if (!moving) target = cur = scrollY; }, { passive: true });
+    // in-page links (Information, Photos) glide there too
+    document.addEventListener('click', e => {
+      const a = e.target.closest('a[href^="#"]');
+      const el = a && document.getElementById(a.getAttribute('href').slice(1));
+      if (!el) return;
+      e.preventDefault();
+      const off = parseFloat(getComputedStyle(el).scrollMarginTop) || 0;
+      target = Math.max(0, Math.min(max(), el.getBoundingClientRect().top + scrollY - off));
+      if (!moving) cur = scrollY;
+      moving = true;
+      if (!raf) raf = requestAnimationFrame(tick);
+      history.replaceState(null, '', '#' + el.id);
+    });
+  }
+
+  /* ---------- reveal: what starts below the fold rises into place when it arrives ---------- */
+  function reveal() {
+    if (reduce || !('IntersectionObserver' in window)) return;
+    const els = [...document.querySelectorAll('.card, .gallery-row figure, .press-grid > li, .people-grid > li, .statement > *, .p-intro, .p-more-head, .phase')];
+    const io = new IntersectionObserver(entries => {
+      let n = 0;
+      entries.filter(en => en.isIntersecting).sort((a, b) => a.boundingClientRect.left - b.boundingClientRect.left).forEach(en => {
+        en.target.style.setProperty('--rv-delay', `${Math.min(n++, 4) * 90}ms`);
+        en.target.classList.add('in');
+        io.unobserve(en.target);
+      });
+    }, { rootMargin: '0px 0px -8% 0px', threshold: .01 });
+    els.forEach(el => {
+      if (el.getBoundingClientRect().top < innerHeight * .92) return;   // already on screen: leave it alone
+      el.classList.add('rv');
+      io.observe(el);
+    });
+  }
+
+  /* ---------- project page: the hero recedes as the sheet covers it; the bar gains a rule once it sticks ---------- */
+  function projectScroll() {
+    const hero = document.querySelector('[data-hero]');
+    const bar = document.querySelector('.p-bar');
+    if (!hero || !bar) return;
+    const heroImg = hero.querySelector('img');
+    let raf = 0;
+    const update = () => {
+      raf = 0;
+      const h = hero.offsetHeight || 1;
+      const p = Math.min(1, Math.max(0, scrollY / h));
+      if (!reduce && heroImg) { heroImg.style.transform = `scale(${(1 + p * .06).toFixed(4)})`; heroImg.style.opacity = (1 - p * .35).toFixed(3); }
+      bar.classList.toggle('is-stuck', bar.getBoundingClientRect().top <= parseFloat(getComputedStyle(bar).top) + .5 && scrollY > 4);
+    };
+    addEventListener('scroll', () => { if (!raf) raf = requestAnimationFrame(update); }, { passive: true });
+    addEventListener('resize', update);
+    update();
+  }
+
   /* ---------- search ---------- */
   function search(root) {
     const btn = root.querySelector('.search-toggle');
@@ -348,4 +433,7 @@
   document.querySelectorAll('[data-masonry]').forEach(masonry);
   document.querySelectorAll('[data-search]').forEach(search);
   lightbox();
+  smoothScroll();
+  reveal();
+  projectScroll();
 })();

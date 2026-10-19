@@ -146,8 +146,8 @@ ${bodyClass.includes('is-home') ? '' : `<footer class="site-footer">
 `;
 };
 
-const tabs = (p, items, label, active = p) => `<nav class="tabs" aria-label="${esc(label)}">${items.map(([to, l]) =>
-  `<a href="${href(p, to)}"${to === active ? ` aria-current="${to === p ? 'page' : 'true'}"` : ''}>${esc(l)}</a>`).join('')}</nav>`;
+const tabs = (p, items, label, active = p) => `<nav class="tabs" aria-label="${esc(label)}">${items.map(([to, l, plain]) =>
+  `<a href="${href(p, to)}"${plain ? ` aria-label="${esc(plain)}"` : ''}${to === active ? ` aria-current="${to === p ? 'page' : 'true'}"` : ''}>${plain ? l : esc(l)}</a>`).join('')}</nav>`;
 const head = (p, title, tabItems, tabLabel, level = 'h1', active = p) =>
   `<header class="page-head"><${level} class="page-title">${esc(title)}</${level}>${tabItems ? tabs(p, tabItems, tabLabel, active) : ''}</header>`;
 
@@ -161,56 +161,100 @@ ${featured.map((x, i) => {
   }).join('\n')}
   </ul>
   <p class="slide-caption" aria-live="polite"><a href="${href('', 'works/' + featured[0].slug)}">${esc(featured[0].title)}</a></p>
+</section>
+<section class="statement" aria-label="The studio">
+  <p class="statement-text">${esc(site.statement)}</p>
+  <ul class="statement-index">${cats.map(c => `<li><a href="${href('', catPath(c.key))}">${esc(c.label)}<sup class="count">${projects.filter(x => x.category === c.key).length}</sup></a></li>`).join('')}</ul>
+  <p class="statement-more"><a href="${href('', 'contact')}">About the studio</a></p>
 </section>`, { bodyClass: 'is-home', image: srcRoot(featured[0].hero.src) });
 
 /* ---------- works ---------- */
-const workTabs = cats.map(c => [catPath(c.key), c.label]);
+const workTabs = cats.map(c => [catPath(c.key), `${c.label}<sup class="count">${projects.filter(x => x.category === c.key).length}</sup>`, c.label]);
+const workPages = [];
 for (const c of cats) {
   const p = catPath(c.key);
   const list = projects.filter(x => x.category === c.key);
-  page(p, c.key === cats[0].key ? 'Selected Works' : `${c.label} Works`, 'works', `${head(p, 'Selected Works', workTabs, 'Project categories')}
+  workPages.push(() => page(p, c.key === cats[0].key ? 'Selected Works' : `${c.label} Works`, 'works', `${head(p, 'Selected Works', workTabs, 'Project categories')}
 <div class="masonry" data-masonry>
-${list.map((x, i) => {
-    const hover = x.hover || null;
-    const hero = x.heroAspect ? { ...x.hero, orientation: x.heroAspect < 1 ? 'portrait' : 'landscape' } : x.hero;
-    return `  <a class="card${hover ? ' has-hover' : ''}" href="${href(p, 'works/' + x.slug)}"${box(hero, i % 4 === 1 ? 'portrait' : 'landscape')}>
-    <span class="card-media">${img(p, x.hero, { alt: x.title, cls: 'card-img', lazy: i > 5, sizes: 'card' })}${hover ? img(p, hover, { cls: 'card-img card-hover', hidden: true, sizes: 'card' }) : ''}</span>
-    <span class="card-title">${esc(x.title)}</span>
-  </a>`;
-  }).join('\n')}
-</div>`, { description: `${c.label} projects by ${site.name}.` });
+${list.map((x, i) => '  ' + card(p, x, i)).join('\n')}
+</div>`, { description: `${c.label} projects by ${site.name}.` }));
 }
 
 /* ---------- project pages ---------- */
+// Gallery rhythm: rows are composed instead of uniform pairs. Every photo keeps its 4:3 or 3:4 box and every
+// gap is the page margin; the variation comes from how wide each row is and which side it sits on.
+const orientOf = g => (g.orientation || (g.w && g.h ? (g.h > g.w ? 'portrait' : 'landscape') : 'landscape'));
+const composeRows = list => {
+  const rows = []; let k = 0, side = 0;
+  const single = a => rows.push({ kind: 'single', side: side++ % 2 ? 'right' : 'left', items: [a] });
+  for (let n = 0; n < list.length; k++) {
+    const a = list[n], b = list[n + 1], oa = orientOf(a), ob = b && orientOf(b);
+    if (oa === 'portrait' && ob === 'portrait') {
+      if (k % 3 === 2) { single(a); n += 1; } else { rows.push({ kind: 'pair', items: [a, b] }); n += 2; }
+    } else if (oa === 'portrait') {
+      if (b && k % 2) { rows.push({ kind: 'pair', items: [a, b] }); n += 2; } else { single(a); n += 1; }
+    } else {
+      const kind = ['full', 'single', 'pair', 'single'][k % 4];
+      if (kind === 'full') rows.push({ kind, items: [a] }), n += 1;
+      else if (kind === 'pair' && b) rows.push({ kind, items: [a, b] }), n += 2;
+      else { single(a); n += 1; }
+    }
+  }
+  return rows;
+};
+const card = (from, x, i, { forceLandscape = false } = {}) => {
+  const hover = x.hover || null;
+  const hero = forceLandscape ? { ...x.hero, orientation: 'landscape' }
+    : x.heroAspect ? { ...x.hero, orientation: x.heroAspect < 1 ? 'portrait' : 'landscape' } : x.hero;
+  return `<a class="card${hover ? ' has-hover' : ''}" href="${href(from, 'works/' + x.slug)}"${box(hero, i % 4 === 1 ? 'portrait' : 'landscape')}>
+    <span class="card-media">${img(from, x.hero, { alt: x.title, cls: 'card-img', lazy: true, sizes: 'card' })}${hover ? img(from, hover, { cls: 'card-img card-hover', hidden: true, sizes: 'card' }) : ''}</span>
+    <span class="card-title">${esc(x.title)}</span>
+  </a>`;
+};
 const byCat = Object.fromEntries(cats.map(c => [c.key, projects.filter(x => x.category === c.key)]));
 for (const x of projects) {
   const p = 'works/' + x.slug;
   const sibs = byCat[x.category];
   const i = sibs.indexOf(x);
-  const prev = sibs[(i - 1 + sibs.length) % sibs.length], next = sibs[(i + 1) % sibs.length];
+  const next = sibs[(i + 1) % sibs.length];
+  const more = [1, 2, 3].map(d => sibs[(i + d) % sibs.length]).filter((m, n, arr) => m !== x && arr.indexOf(m) === n);
   const gallery = (x.gallery || []).filter(g => g.src && g.src !== x.hero.src);
-  const rows = [];
-  for (let k = 0; k < gallery.length; k += 2) rows.push(gallery.slice(k, k + 2));
-  const desc = (x.description || []);
-  const meta = [];
-  if (x.collaborators?.length) meta.push(`<section class="meta-block"><h2>Collaborators</h2><ul class="credits">${x.collaborators.map(c =>
-    `<li><span class="credit-name">${esc(c.name)}</span><span class="credit-role">${esc(c.role)}</span></li>`).join('')}</ul></section>`);
-  if (x.recognition?.length) meta.push(`<section class="meta-block"><h2>Recognition</h2><ul class="recognition">${x.recognition.map(r =>
-    `<li>${r.url ? `<a href="${esc(r.url)}" target="_blank" rel="noopener">${esc(r.name)}</a>` : esc(r.name)}</li>`).join('')}</ul></section>`);
+  const desc = (x.description || []).filter(Boolean);
+  // a short first line is the project's tagline; it becomes the lead. Otherwise the first paragraph leads.
+  const lead = desc[0] || '';
+  const body = desc.slice(1);
+  const facts = [];
+  if (x.location) facts.push(['Location', esc(x.location)]);
+  facts.push(['Type', `<a href="${href(p, catPath(x.category))}">${esc(catLabel(x.category))}</a>`]);
+  if (x.collaborators?.length) facts.push(['Collaborators', x.collaborators.map(c =>
+    `<span class="fact-line">${c.role ? `<span class="fact-role">${esc(c.role)}</span> ` : ''}${esc(c.name)}</span>`).join('')]);
+  if (x.recognition?.length) facts.push(['Recognition', x.recognition.map(r =>
+    `<span class="fact-line">${r.url ? `<a href="${esc(r.url)}" target="_blank" rel="noopener">${esc(r.name)}</a>` : esc(r.name)}</span>`).join('')]);
+  const rows = composeRows(gallery);
   page(p, x.title, 'works', `<article class="project">
-  <header class="page-head project-head"><h1 class="page-title">${esc(x.title)}</h1>
-    <p class="project-kicker"><a href="${href(p, catPath(x.category))}">${esc(catLabel(x.category))}</a>${x.location ? ` <span aria-hidden="true">·</span> ${esc(x.location)}` : ''}</p></header>
-  <figure class="project-hero"><span class="hero-box"${box(x.hero, 'landscape')}>${zoom(p, x.hero, img(p, x.hero, { alt: x.title, lazy: false, priority: true, sizes: 'full' }), x.title)}</span></figure>
-${desc.length ? `  <div class="prose project-text">${desc.map(d => `<p>${esc(d)}</p>`).join('\n')}</div>\n` : ''}${rows.length ? `  <div class="gallery">
-${rows.map(r => `    <div class="gallery-row">${r.map(g => {
-    return `<figure${box(g, DEMO_GALLERY[gallery.indexOf(g) % DEMO_GALLERY.length])}>${zoom(p, g, img(p, g, { alt: g.alt || `${x.title}` }), g.alt || x.title)}</figure>`;
-  }).join('')}</div>`).join('\n')}
-  </div>\n` : ''}${meta.length ? `  <div class="project-meta">${meta.join('')}</div>\n` : ''}  <nav class="pager" aria-label="More projects">
-    <a href="${href(p, 'works/' + prev.slug)}" rel="prev"><span>Previous</span>${esc(prev.title)}</a>
-    <a href="${href(p, 'works/' + next.slug)}" rel="next"><span>Next</span>${esc(next.title)}</a>
-  </nav>
-</article>`, { description: desc[0] || `${x.title}, a ${catLabel(x.category).toLowerCase()} project by ${site.name}.`, image: srcRoot(x.hero.src) });
+  <figure class="p-hero" data-hero><span class="hero-box"${box(x.hero, 'landscape')}>${zoom(p, x.hero, img(p, x.hero, { alt: x.title, lazy: false, priority: true, sizes: 'full' }), x.title)}</span></figure>
+  <div class="p-sheet">
+    <nav class="p-bar" aria-label="${esc(x.title)}">
+      <h1 class="p-title">${esc(x.title)}${x.location ? `<span class="p-where">${esc(x.location)}</span>` : ''}</h1>
+      <span class="p-links"><a href="#info">Information</a>${rows.length ? '<a href="#photos">Photos</a>' : ''}<a href="${href(p, 'works/' + next.slug)}" rel="next">Next project</a></span>
+    </nav>
+    <section class="p-intro" id="info">
+${lead ? `      <p class="p-lead">${esc(lead)}</p>\n` : ''}      <div class="p-cols">
+        <div class="prose p-body">${body.map(d => `<p>${esc(d)}</p>`).join('\n')}</div>
+        <dl class="p-facts">${facts.map(([k, v]) => `<div><dt>${k}</dt><dd>${v}</dd></div>`).join('')}</dl>
+      </div>
+    </section>
+${rows.length ? `    <section class="gallery" id="photos" aria-label="Photos">
+${rows.map(r => `      <div class="gallery-row is-${r.kind}${r.side ? ' is-' + r.side : ''}">${r.items.map(g =>
+    `<figure${box(g, DEMO_GALLERY[gallery.indexOf(g) % DEMO_GALLERY.length])}>${zoom(p, g, img(p, g, { alt: g.alt || x.title, sizes: r.kind === 'pair' ? 'half' : 'full' }), g.alt || x.title)}</figure>`).join('')}</div>`).join('\n')}
+    </section>\n` : ''}${more.length ? `    <section class="p-more">
+      <header class="p-more-head"><h2>More ${esc(catLabel(x.category))}</h2><a href="${href(p, catPath(x.category))}">All ${sibs.length} projects</a></header>
+      <div class="more-grid">${more.map((m, n) => card(p, m, n, { forceLandscape: true })).join('')}</div>
+    </section>\n` : ''}  </div>
+</article>`, { description: lead || `${x.title}, a ${catLabel(x.category).toLowerCase()} project by ${site.name}.`, image: srcRoot(x.hero.src), bodyClass: 'is-project' });
 }
+
+workPages.forEach(f => f());
 
 /* ---------- press ---------- */
 const pressTabs = [['press', 'Media'], ['press/awards', 'Awards'], ['press/events', 'Events']];

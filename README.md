@@ -41,13 +41,17 @@ Node 18 or newer. `npm install` adds `sharp`, which the photo import uses to res
 
 | URL | Page |
 |---|---|
-| `/` | Slideshow of `featured` projects. Drag, scroll or arrow keys; loops; click opens the project |
+| `/` | Slideshow of `featured` projects (drag, sideways swipe or arrow keys; loops), then the studio statement from `site.json` and category links with project counts |
 | `/works/` `/works/commercial/` `/works/fabrication/` `/works/on-the-boards/` | Selected Works, masonry grid |
-| `/works/<slug>/` | Project page |
+| `/works/<slug>/` | Project page: screen-height hero the page slides over, a sticky bar (Information, Photos, Next project), the first description paragraph as the lead with the rest beside a facts column, a composed gallery, and three more projects from the same category |
 | `/press/` `/press/awards/` `/press/events/` | Press |
 | `/contact/` `/contact/people/` `/contact/people/<slug>/` `/contact/services/` | About, People, profiles, Services & Process |
 
 Asset links carry a version stamp, so a new deploy is never hidden behind a browser's cached copy.
+
+Desktop scrolling is weighted (it eases to a stop), and anything that starts below the fold rises into place as it arrives. Both switch off for people who have reduced motion turned on, and touch scrolling is left native.
+
+Gallery rows are composed automatically from the photos' orientations: screen-sized singles, pairs, and singles set to the left or right, always in 4:3 or 3:4 boxes with the page margin as every gap.
 
 Search (header) covers projects, press, awards, events, people and pages.
 
