@@ -62,6 +62,13 @@ const orient = (im, demo) => {
 };
 const box = (im, demo) => ` data-orient="${orient(im, demo)}"`;
 const DEMO_GALLERY = ['portrait', 'portrait', 'portrait', 'landscape', 'landscape', 'portrait'];
+// project photos open in the viewer (site.js); without script the link opens the full photo on its own
+const zoom = (from, im, inner, label) => {
+  const o = typeof im === 'string' ? { src: im } : im;
+  if (!o?.src) return inner;
+  const dims = o.w && o.h ? ` data-w="${o.w}" data-h="${o.h}"` : '';
+  return `<a class="zoom" href="${esc(src(from, o.src))}"${dims} aria-label="Enlarge photo: ${esc(label)}">${inner}</a>`;
+};
 const cats = site.categories;
 const catPath = k => k === cats[0].key ? 'works' : `works/${k}`;
 const catLabel = k => cats.find(c => c.key === k)?.label ?? k;
@@ -186,12 +193,21 @@ for (const x of projects) {
   page(p, x.title, 'works', `<article class="project">
   <header class="page-head project-head"><h1 class="page-title">${esc(x.title)}</h1>
     <p class="project-kicker"><a href="${href(p, catPath(x.category))}">${esc(catLabel(x.category))}</a>${x.location ? ` <span aria-hidden="true">·</span> ${esc(x.location)}` : ''}</p></header>
-  <figure class="project-hero"><span class="hero-box"${box(x.hero, 'landscape')}>${img(p, x.hero, { alt: x.title, lazy: false, priority: true, sizes: 'full' })}</span></figure>
+  <figure class="project-hero"><span class="hero-box"${box(x.hero, 'landscape')}>${zoom(p, x.hero, img(p, x.hero, { alt: x.title, lazy: false, priority: true, sizes: 'full' }), x.title)}</span></figure>
 ${desc.length ? `  <div class="prose project-text">${desc.map(d => `<p>${esc(d)}</p>`).join('\n')}</div>\n` : ''}${rows.length ? `  <div class="gallery">
 ${rows.map(r => `    <div class="gallery-row">${r.map(g => {
-    return `<figure${box(g, DEMO_GALLERY[gallery.indexOf(g) % DEMO_GALLERY.length])}>${img(p, g, { alt: g.alt || `${x.title}` })}</figure>`;
+    return `<figure${box(g, DEMO_GALLERY[gallery.indexOf(g) % DEMO_GALLERY.length])}>${zoom(p, g, img(p, g, { alt: g.alt || `${x.title}` }), g.alt || x.title)}</figure>`;
   }).join('')}</div>`).join('\n')}
-  </div>\n` : ''}${meta.length ? `  <div class="project-meta">${meta.join('')}</div>\n` : ''}  <nav class="pager" aria-label="More projects">
+  </div>\n` : ''}${meta.length ? `  <div class="project-meta">${meta.join('')}</div>\n` : ''}  <div class="viewer" role="dialog" aria-modal="true" aria-label="${esc(x.title)} photos" hidden>
+    <div class="viewer-stage"><img class="viewer-img" alt=""></div>
+    <div class="viewer-bar">
+      <button type="button" class="viewer-prev">Previous</button>
+      <span class="viewer-count" aria-live="polite"></span>
+      <button type="button" class="viewer-next">Next</button>
+    </div>
+    <button type="button" class="viewer-close">Close</button>
+  </div>
+  <nav class="pager" aria-label="More projects">
     <a href="${href(p, 'works/' + prev.slug)}" rel="prev"><span>Previous</span>${esc(prev.title)}</a>
     <a href="${href(p, 'works/' + next.slug)}" rel="next"><span>Next</span>${esc(next.title)}</a>
   </nav>
