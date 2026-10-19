@@ -172,142 +172,124 @@
     el.addEventListener('orient', () => { if (scrollY < 40) { clearTimeout(layout.t); layout.t = setTimeout(() => layout(true), 120); } });
   }
 
-  /* ---------- project photo viewer: full frame on open, click to zoom to full resolution ---------- */
-  function viewer(el) {
-    const links = [...document.querySelectorAll('.project a.zoom')];
-    if (!links.length) return;
-    const stage = el.querySelector('.viewer-stage');
-    const im = el.querySelector('.viewer-img');
-    const count = el.querySelector('.viewer-count');
-    const prevB = el.querySelector('.viewer-prev'), nextB = el.querySelector('.viewer-next'), closeB = el.querySelector('.viewer-close');
-    let i = 0, natW = 0, natH = 0, fit = 1, scale = 1, x = 0, y = 0, zoomed = false, opener = null, token = 0;
+  /* ---------- project photos: enlarge in place over a shaded, blurred page ---------- */
+  function lightbox() {
+    const items = [...document.querySelectorAll('.project .zoom')];
+    if (!items.length) return;
+    const root = document.createElement('div');
+    root.className = 'lb'; root.hidden = true;
+    root.setAttribute('role', 'dialog'); root.setAttribute('aria-modal', 'true'); root.setAttribute('aria-label', 'Enlarged photo');
+    root.innerHTML = '<div class="lb-shade"></div><img class="lb-img" alt=""><button type="button" class="lb-close sr-only">Close photo</button>';
+    document.body.append(root);
+    const shade = root.querySelector('.lb-shade'), im = root.querySelector('.lb-img'), closeB = root.querySelector('.lb-close');
+    const DUR = reduce ? 1 : 560, EASE = 'cubic-bezier(.22, 1, .36, 1)';
+    let cur = -1, busy = false, rect = null;
 
-    const sw = () => stage.clientWidth, sh = () => stage.clientHeight;
-    const apply = anim => {
-      im.classList.toggle('no-anim', !anim);
-      im.style.width = natW + 'px'; im.style.height = natH + 'px';
-      im.style.transform = `translate3d(${x.toFixed(1)}px,${y.toFixed(1)}px,0) scale(${scale})`;
+    const thumb = n => items[n].querySelector('img');
+    const size = n => {
+      const b = items[n], t = thumb(n);
+      return [+b.dataset.w || t.naturalWidth || 4, +b.dataset.h || t.naturalHeight || 3];
     };
-    const clamp = () => {
-      const w = natW * scale, h = natH * scale;
-      x = w <= sw() ? (sw() - w) / 2 : Math.min(0, Math.max(sw() - w, x));
-      y = h <= sh() ? (sh() - h) / 2 : Math.min(0, Math.max(sh() - h, y));
+    // the whole, uncropped photo, as large as the window allows
+    const fitRect = n => {
+      const [w, h] = size(n), m = Math.max(16, Math.min(innerWidth, innerHeight) * .04);
+      const k = Math.min((innerWidth - 2 * m) / w, (innerHeight - 2 * m) / h);
+      return { x: (innerWidth - w * k) / 2, y: (innerHeight - h * k) / 2, w: w * k, h: h * k };
     };
-    const fitView = anim => {
-      fit = Math.min(sw() / natW, sh() / natH, 1.5);
-      scale = fit; zoomed = false; stage.classList.remove('is-zoomed'); clamp(); apply(anim);
+    const place = r => Object.assign(im.style, { left: r.x + 'px', top: r.y + 'px', width: r.w + 'px', height: r.h + 'px' });
+    // transform + clip that make the full-size photo look exactly like its cropped thumbnail
+    const fromThumb = (t, r) => {
+      const k = Math.max(t.width / r.w, t.height / r.h), vw = t.width / k, vh = t.height / k;
+      const ix = (r.w - vw) / 2, iy = (r.h - vh) / 2;
+      return { transform: `translate(${t.left - r.x - ix * k}px, ${t.top - r.y - iy * k}px) scale(${k})`, clipPath: `inset(${iy}px ${ix}px ${iy}px ${ix}px)` };
     };
-    // zoom to full resolution (at least twice the fitted size), keeping the clicked point under the pointer
-    const zoomAt = (px, py) => {
-      const target = Math.max(1, fit * 2);
-      if (target <= fit * 1.05) return;
-      const r = stage.getBoundingClientRect(), cx = px - r.left, cy = py - r.top;
-      x = cx - (cx - x) * (target / scale); y = cy - (cy - y) * (target / scale);
-      scale = target; zoomed = true; stage.classList.add('is-zoomed'); clamp(); apply(true);
+    const lock = on => {
+      const de = document.documentElement;
+      if (on) { const sb = innerWidth - de.clientWidth; de.classList.add('lb-open'); if (sb > 0) { document.body.style.paddingRight = sb + 'px'; document.querySelector('.site-header').style.paddingRight = `calc(var(--gutter) + ${sb}px)`; } }
+      else { de.classList.remove('lb-open'); document.body.style.paddingRight = ''; document.querySelector('.site-header').style.paddingRight = ''; }
+    };
+    const onScreen = t => t.bottom > 0 && t.top < innerHeight && t.right > 0 && t.left < innerWidth;
+    const loadFull = n => {
+      const full = new Image();
+      full.src = items[n].dataset.full;
+      full.decode().then(() => { if (cur === n) im.src = full.src; }).catch(() => {});
     };
 
-    const show = n => {
-      i = (n + links.length) % links.length;
-      const a = links[i], my = ++token;
-      count.textContent = `${i + 1} / ${links.length}`;
-      prevB.disabled = nextB.disabled = links.length < 2;
-      im.classList.remove('is-ready');
-      im.alt = a.querySelector('img')?.alt || '';
-      const pre = new Image();
-      pre.onload = () => {
-        if (my !== token) return;
-        natW = pre.naturalWidth; natH = pre.naturalHeight;
-        im.src = pre.src; fitView(false);
-        requestAnimationFrame(() => im.classList.add('is-ready'));
-        [links[(i + 1) % links.length], links[(i - 1 + links.length) % links.length]].forEach(l => { new Image().src = l.href; });
-      };
-      pre.onerror = () => { if (my === token) { count.textContent = `${i + 1} / ${links.length} · photo unavailable`; } };
-      pre.src = a.href;
-    };
     const open = n => {
-      opener = document.activeElement;
-      el.hidden = false; document.documentElement.classList.add('viewer-open');
-      requestAnimationFrame(() => el.classList.add('is-open'));
-      show(n); closeB.focus();
-    };
-    const close = () => {
-      el.classList.remove('is-open'); document.documentElement.classList.remove('viewer-open');
-      setTimeout(() => { el.hidden = true; im.removeAttribute('src'); im.classList.remove('is-ready'); }, reduce ? 0 : 350);
-      opener?.focus?.();
+      if (busy || !root.hidden) return;
+      busy = true; cur = n;
+      const t = thumb(n), tr = t.getBoundingClientRect();
+      im.src = t.currentSrc || t.src; im.alt = t.alt;
+      rect = fitRect(n); place(rect);
+      lock(true); root.hidden = false;
+      t.style.visibility = 'hidden';
+      const start = fromThumb(tr, rect);
+      im.animate([start, { transform: 'none', clipPath: 'inset(0px 0px 0px 0px)' }], { duration: DUR, easing: EASE });
+      shade.animate([{ opacity: 0 }, { opacity: 1 }], { duration: DUR * .8, easing: 'ease-out', fill: 'both' })
+        .finished.then(() => { busy = false; });
+      loadFull(n);
+      closeB.focus({ preventScroll: true });
     };
 
-    links.forEach((a, n) => a.addEventListener('click', e => {
-      if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return;   // let "open in new tab" work
-      e.preventDefault(); open(n);
-    }));
-    prevB.addEventListener('click', () => show(i - 1));
-    nextB.addEventListener('click', () => show(i + 1));
+    const close = () => {
+      if (busy || root.hidden) return;
+      busy = true;
+      const t = thumb(cur), tr = t.getBoundingClientRect();
+      const anim = onScreen(tr)
+        ? im.animate([{ transform: 'none', clipPath: 'inset(0px 0px 0px 0px)' }, fromThumb(tr, rect)], { duration: DUR * .85, easing: EASE, fill: 'forwards' })
+        : im.animate([{ opacity: 1, transform: 'none' }, { opacity: 0, transform: 'scale(.96)' }], { duration: DUR * .6, easing: EASE, fill: 'forwards' });
+      shade.animate([{ opacity: 1 }, { opacity: 0 }], { duration: DUR * .7, easing: 'ease-in', fill: 'forwards' });
+      anim.finished.then(() => {
+        t.style.visibility = '';
+        root.hidden = true; lock(false);
+        im.getAnimations().forEach(a => a.cancel()); shade.getAnimations().forEach(a => a.cancel());
+        im.removeAttribute('src');
+        items[cur].focus({ preventScroll: true });
+        busy = false;
+      });
+    };
+
+    // next / previous photo while enlarged: arrow keys or a sideways swipe
+    const go = d => {
+      if (busy || root.hidden) return;
+      busy = true;
+      const n = (cur + d + items.length) % items.length;
+      im.animate([{ opacity: 1, transform: 'none' }, { opacity: 0, transform: `translateX(${-d * 24}px)` }], { duration: 180, easing: 'ease-in', fill: 'forwards' })
+        .finished.then(() => {
+          thumb(cur).style.visibility = '';
+          cur = n; const t = thumb(n);
+          t.style.visibility = 'hidden';
+          im.getAnimations().forEach(a => a.cancel());
+          im.src = t.currentSrc || t.src; im.alt = t.alt;
+          rect = fitRect(n); place(rect);
+          loadFull(n);
+          return im.animate([{ opacity: 0, transform: `translateX(${d * 24}px)` }, { opacity: 1, transform: 'none' }], { duration: 320, easing: EASE }).finished;
+        })
+        .then(() => { busy = false; });
+    };
+
+    items.forEach((b, n) => b.addEventListener('click', () => open(n)));
+    let swiped = false;
+    shade.addEventListener('click', () => { if (swiped) { swiped = false; return; } close(); });
     closeB.addEventListener('click', close);
     document.addEventListener('keydown', e => {
-      if (el.hidden) return;
-      if (e.key === 'Escape') { e.preventDefault(); zoomed ? fitView(true) : close(); }
-      else if (e.key === 'ArrowRight') { e.preventDefault(); show(i + 1); }
-      else if (e.key === 'ArrowLeft') { e.preventDefault(); show(i - 1); }
-      else if (e.key === 'Tab') {                       // keep focus inside the viewer
-        const f = [...el.querySelectorAll('button:not([disabled])')];
-        const k = f.indexOf(document.activeElement);
-        if (e.shiftKey && k <= 0) { e.preventDefault(); f[f.length - 1].focus(); }
-        else if (!e.shiftKey && k === f.length - 1) { e.preventDefault(); f[0].focus(); }
-      }
+      if (root.hidden) return;
+      if (e.key === 'Escape') { e.preventDefault(); close(); }
+      else if (e.key === 'ArrowRight') { e.preventDefault(); go(1); }
+      else if (e.key === 'ArrowLeft') { e.preventDefault(); go(-1); }
+      else if (e.key === 'Tab') { e.preventDefault(); closeB.focus(); }
     });
-
-    // pointer: click toggles zoom; drag pans when zoomed; horizontal swipe changes photo when not zoomed
-    let down = null, moved = false, pinch = null;
-    const pts = new Map();
-    stage.addEventListener('pointerdown', e => {
-      pts.set(e.pointerId, [e.clientX, e.clientY]);
-      stage.setPointerCapture(e.pointerId);
-      if (pts.size === 2) {
-        const [[ax, ay], [bx, by]] = [...pts.values()];
-        pinch = { d: Math.hypot(ax - bx, ay - by), s: scale, cx: (ax + bx) / 2, cy: (ay + by) / 2, x, y };
-        down = null; return;
-      }
-      down = { x: e.clientX, y: e.clientY, ox: x, oy: y, t: e.timeStamp }; moved = false;
+    root.addEventListener('wheel', e => { e.preventDefault(); if (Math.abs(e.deltaY) > 8) close(); }, { passive: false });
+    let sx = null, sy = 0;
+    root.addEventListener('pointerdown', e => { sx = e.clientX; sy = e.clientY; });
+    root.addEventListener('pointerup', e => {
+      if (sx === null) return;
+      const dx = e.clientX - sx, dy = e.clientY - sy; sx = null;
+      swiped = Math.hypot(dx, dy) > 10;
+      if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.5) go(dx < 0 ? 1 : -1);
+      else if (Math.abs(dy) > 80 && Math.abs(dy) > Math.abs(dx)) close();      // swipe up or down to dismiss on phones
     });
-    stage.addEventListener('pointermove', e => {
-      if (!pts.has(e.pointerId)) return;
-      pts.set(e.pointerId, [e.clientX, e.clientY]);
-      if (pinch && pts.size === 2) {
-        const [[ax, ay], [bx, by]] = [...pts.values()];
-        const r = stage.getBoundingClientRect(), cx = pinch.cx - r.left, cy = pinch.cy - r.top;
-        const ns = Math.min(Math.max(fit, pinch.s * Math.hypot(ax - bx, ay - by) / pinch.d), Math.max(1, fit * 4));
-        x = cx - (cx - pinch.x) * (ns / pinch.s); y = cy - (cy - pinch.y) * (ns / pinch.s); scale = ns;
-        zoomed = scale > fit * 1.02; stage.classList.toggle('is-zoomed', zoomed); clamp(); apply(false); return;
-      }
-      if (!down) return;
-      const dx = e.clientX - down.x, dy = e.clientY - down.y;
-      if (!moved && Math.hypot(dx, dy) > 6) { moved = true; if (zoomed) stage.classList.add('is-panning'); }
-      if (moved && zoomed) { x = down.ox + dx; y = down.oy + dy; clamp(); apply(false); }
-    });
-    const end = e => {
-      pts.delete(e.pointerId);
-      if (pinch) { if (pts.size < 2) pinch = null; return; }
-      if (!down) return;
-      const dx = e.clientX - down.x, dy = e.clientY - down.y;
-      stage.classList.remove('is-panning');
-      if (!moved) { zoomed ? fitView(true) : zoomAt(e.clientX, e.clientY); }
-      else if (!zoomed && Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.5) show(i + (dx < 0 ? 1 : -1));
-      down = null;
-    };
-    stage.addEventListener('pointerup', end);
-    stage.addEventListener('pointercancel', e => { pts.delete(e.pointerId); pinch = null; down = null; stage.classList.remove('is-panning'); });
-    stage.addEventListener('wheel', e => {                  // trackpad pinch arrives as ctrl+wheel
-      if (!e.ctrlKey && !zoomed) return;
-      e.preventDefault();
-      if (e.ctrlKey) {
-        const r = stage.getBoundingClientRect(), cx = e.clientX - r.left, cy = e.clientY - r.top;
-        const ns = Math.min(Math.max(fit, scale * Math.exp(-e.deltaY * .01)), Math.max(1, fit * 4));
-        x = cx - (cx - x) * (ns / scale); y = cy - (cy - y) * (ns / scale); scale = ns;
-        zoomed = scale > fit * 1.02; stage.classList.toggle('is-zoomed', zoomed);
-      } else { x -= e.deltaX; y -= e.deltaY; }
-      clamp(); apply(false);
-    }, { passive: false });
-    new ResizeObserver(() => { if (!el.hidden && natW) fitView(false); }).observe(stage);
+    addEventListener('resize', () => { if (!root.hidden && !busy) { rect = fitRect(cur); place(rect); } });
   }
 
   /* ---------- search ---------- */
@@ -351,5 +333,5 @@
   document.querySelectorAll('[data-slideshow]').forEach(slideshow);
   document.querySelectorAll('[data-masonry]').forEach(masonry);
   document.querySelectorAll('[data-search]').forEach(search);
-  document.querySelectorAll('.viewer').forEach(viewer);
+  lightbox();
 })();

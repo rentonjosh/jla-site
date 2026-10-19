@@ -2,9 +2,10 @@
 //   node build.mjs            -> dist/     clean URLs (works/golden-gate/), for any static host
 //   node build.mjs --preview  -> preview/  explicit index.html links, opens straight from disk
 import fs from 'node:fs/promises';
-import { existsSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { createHash } from 'node:crypto';
 
 const ROOT = path.dirname(fileURLToPath(import.meta.url));
 const DEMO = process.argv.includes('--demo');
@@ -12,6 +13,12 @@ const NOINDEX = process.argv.includes('--noindex');   // staging copies: keep th
 const PREVIEW = DEMO || process.argv.includes('--preview');
 const OUT = path.join(ROOT, DEMO ? 'preview-demo' : PREVIEW ? 'preview' : 'dist');
 const UPLOADS = 'https://johnlumarchitecture.com/wp-content/uploads/';
+// changes whenever the stylesheet, script or content changes, so browsers never keep a stale copy
+const VERSION = createHash('sha1').update(
+  ['src/styles.css', 'src/site.js', 'content/projects.json', 'content/people.json', 'content/press.json'].map(f => {
+    try { return require_(f); } catch { return ''; }
+  }).join('')).digest('hex').slice(0, 8);
+function require_(f) { return readFileSync(path.join(ROOT, f), 'utf8'); }
 
 const load = f => fs.readFile(path.join(ROOT, 'content', f), 'utf8').then(JSON.parse);
 const [site, projects, press, people, services] = await Promise.all(
@@ -62,12 +69,12 @@ const orient = (im, demo) => {
 };
 const box = (im, demo) => ` data-orient="${orient(im, demo)}"`;
 const DEMO_GALLERY = ['portrait', 'portrait', 'portrait', 'landscape', 'landscape', 'portrait'];
-// project photos open in the viewer (site.js); without script the link opens the full photo on its own
+// project photos enlarge in place (site.js): a button, so a click never leaves the page
 const zoom = (from, im, inner, label) => {
   const o = typeof im === 'string' ? { src: im } : im;
   if (!o?.src) return inner;
   const dims = o.w && o.h ? ` data-w="${o.w}" data-h="${o.h}"` : '';
-  return `<a class="zoom" href="${esc(src(from, o.src))}"${dims} aria-label="Enlarge photo: ${esc(label)}">${inner}</a>`;
+  return `<button type="button" class="zoom" data-full="${esc(src(from, o.src))}"${dims} aria-label="Enlarge photo: ${esc(label)}">${inner}</button>`;
 };
 const cats = site.categories;
 const catPath = k => k === cats[0].key ? 'works' : `works/${k}`;
@@ -102,7 +109,7 @@ ${image ? `<meta property="og:image" content="${esc(/^https?:/.test(image) ? ima
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap">
-<link rel="stylesheet" href="${file(p, 'assets/styles.css')}">
+<link rel="stylesheet" href="${file(p, 'assets/styles.css')}?v=${VERSION}">
 <script>document.documentElement.classList.add('js')</script>
 <link rel="icon" href="${file(p, 'assets/favicon.svg')}" type="image/svg+xml">
 </head>
@@ -132,8 +139,8 @@ ${bodyClass.includes('is-home') ? '' : `<footer class="site-footer">
   <a href="${esc(site.instagram)}" target="_blank" rel="noopener">Instagram</a>
 </footer>`}
 <script>window.JLA={root:${JSON.stringify(file(p, '') ? file(p, '') + '/' : '')},preview:${PREVIEW}}</script>
-<script src="${file(p, 'assets/search-index.js')}" defer></script>
-<script src="${file(p, 'assets/site.js')}" defer></script>
+<script src="${file(p, 'assets/search-index.js')}?v=${VERSION}" defer></script>
+<script src="${file(p, 'assets/site.js')}?v=${VERSION}" defer></script>
 </body>
 </html>
 `;
@@ -198,16 +205,7 @@ ${desc.length ? `  <div class="prose project-text">${desc.map(d => `<p>${esc(d)}
 ${rows.map(r => `    <div class="gallery-row">${r.map(g => {
     return `<figure${box(g, DEMO_GALLERY[gallery.indexOf(g) % DEMO_GALLERY.length])}>${zoom(p, g, img(p, g, { alt: g.alt || `${x.title}` }), g.alt || x.title)}</figure>`;
   }).join('')}</div>`).join('\n')}
-  </div>\n` : ''}${meta.length ? `  <div class="project-meta">${meta.join('')}</div>\n` : ''}  <div class="viewer" role="dialog" aria-modal="true" aria-label="${esc(x.title)} photos" hidden>
-    <div class="viewer-stage"><img class="viewer-img" alt=""></div>
-    <div class="viewer-bar">
-      <button type="button" class="viewer-prev">Previous</button>
-      <span class="viewer-count" aria-live="polite"></span>
-      <button type="button" class="viewer-next">Next</button>
-    </div>
-    <button type="button" class="viewer-close">Close</button>
-  </div>
-  <nav class="pager" aria-label="More projects">
+  </div>\n` : ''}${meta.length ? `  <div class="project-meta">${meta.join('')}</div>\n` : ''}  <nav class="pager" aria-label="More projects">
     <a href="${href(p, 'works/' + prev.slug)}" rel="prev"><span>Previous</span>${esc(prev.title)}</a>
     <a href="${href(p, 'works/' + next.slug)}" rel="next"><span>Next</span>${esc(next.title)}</a>
   </nav>
