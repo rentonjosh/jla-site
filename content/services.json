@@ -1,0 +1,63 @@
+{
+  "intro": "What to expect when you work with us. Architectural projects and approvals involve many stages and have complicated procedures. Here is our guide to show you how it is organized, along with benchmarks, timelines, and anticipated costs. We look forward to working with you!",
+  "phases": [
+    {
+      "name": "Schematic Design & Preliminary Pricing",
+      "purpose": "Establish building program, space requirements, design direction",
+      "timeline": "Usually 1–4 months for a single-family home",
+      "meetings": "One to four, typically",
+      "tasks": [
+        "Site visit to measure building / documentation of field conditions and input into CAD format",
+        "Create schematic level floor plans, hand-sketched perspectives, with discussion on finishes",
+        "Explore different design directions and select one",
+        "Preliminary pricing from Owner’s general contractor (if desired) and design approval by client before proceeding to next phase"
+      ]
+    },
+    {
+      "name": "Design Development & Construction Documents",
+      "purpose": "Develop the schematic design and prepare construction documents",
+      "timeline": "Usually 1–4 months for a single-family home",
+      "meetings": "One to four, typically",
+      "tasks": [
+        "Finalize site, floor and reflected ceiling plans (including electrical and lighting), elevations, sections, details, schedules and specifications as required",
+        "Coordinate consultants across project disciplines",
+        "Prepare Planning Review Application, if required",
+        "Prepare variance submittal, if required"
+      ]
+    },
+    {
+      "name": "Permitting & Final Pricing",
+      "purpose": "Obtain city or county approval for construction",
+      "timeline": "Bid documents 2–4 weeks · Permit processing 2–12 months · Pricing 3–4 weeks · Bidding 4–6 weeks",
+      "meetings": "One to five, typically",
+      "tasks": [
+        "Submit building permit application or addendum and respond to agency comments and code interpretations",
+        "Assist with final pricing and/or prepare bid documents",
+        "Answer contractor questions and help select and prepare construction contract documents"
+      ],
+      "required": ["Consultant documents (structural, lighting, mechanical and electrical as required)", "Title 24 energy report"]
+    },
+    {
+      "name": "Construction Administration",
+      "purpose": "Administer the construction contract and represent the client",
+      "timeline": "Per the contractor’s construction schedule",
+      "meetings": "Bi-weekly site visits with the contractor",
+      "tasks": [
+        "Site visits as required to observe construction",
+        "Answer contractor questions",
+        "Review payment requests"
+      ]
+    },
+    {
+      "name": "Completion",
+      "purpose": "Close out the project, with photography and possible publication",
+      "timeline": "As required",
+      "meetings": "As required",
+      "tasks": [
+        "Punch list",
+        "Completion of construction",
+        "Certificate of Final Completion"
+      ]
+    }
+  ]
+}

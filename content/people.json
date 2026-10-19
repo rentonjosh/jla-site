@@ -1,0 +1,32 @@
+[
+  { "slug": "john-lum", "name": "John Lum", "credentials": "AIA", "title": "Founding Principal", "photo": "2020/04/John.png" },
+  { "slug": "khoan-duong", "name": "Khoan Duong", "credentials": "AIA", "title": "Principal", "photo": "2019/04/Khoan_Duong_Headshot_19B8697_SQ1_Web.jpg" },
+  { "slug": "bret-walters", "name": "Bret Walters", "credentials": "AIA, NCARB", "title": "Principal", "photo": "2019/04/Bret_Walters_Headshot_19B8721_SQ1_Web.jpg" },
+  {
+    "slug": "david-castro",
+    "name": "David Castro",
+    "title": "Project Manager",
+    "photo": "2023/05/DCastro.jpg",
+    "extension": "10027",
+    "email": "david@johnlumarchitecture.com",
+    "education": "BArch, University of San Francisco",
+    "bio": [
+      "Originally from Cuernavaca, Mexico, David has been working in architecture in the Bay Area for 13+ years.",
+      "While his main focus has been on single-family home remodels, he has designed and managed new construction, restaurants, wineries, including production facilities and hospitality spaces, and tenant improvements.",
+      "Attuned to his surroundings, he has an affinity for developing spaces that enhance the living experience, balancing the relationship between human scale, massing, and quality of life.",
+      "During his free time, David enjoys experimenting with cooking and dabbling in home improvement projects."
+    ],
+    "inspiration": { "caption": "DL1310 Apartments by Young & Ayata", "src": "" }
+  },
+  { "slug": "cristian-matei", "name": "Cristian Matei", "title": "Project Manager", "photo": "2020/03/Screen-Shot-2019-09-03-at-4.51.39-PM-450x450.png" },
+  { "slug": "ryan-michka", "name": "Ryan Michka", "credentials": "AIA", "title": "Architect", "photo": "2022/11/RyanSq.jpg" },
+  { "slug": "khoa-le", "name": "Khoa Le", "title": "Project Designer", "photo": "2021/11/KHOA-square.jpg" },
+  { "slug": "melissa-moffatt", "name": "Melissa Moffatt", "title": "Project Designer", "photo": "2021/11/mmm_website_picture.jpg" },
+  { "slug": "kyle-matlock", "name": "Kyle Matlock", "title": "Designer", "photo": "2026/02/Profile-Picture.png" },
+  { "slug": "haley-mayes", "name": "Haley Mayes", "title": "Designer", "photo": "2025/05/haley-headshot-new.jpg" },
+  { "slug": "claudia-chang", "name": "Claudia Chang", "title": "Junior Designer", "photo": "2025/05/Claudia.jpeg" },
+  { "slug": "josh-renton", "name": "Josh Renton", "title": "Junior Designer", "photo": "2025/01/Josh.jpg" },
+  { "slug": "lee-martinez", "name": "Lee Martinez", "title": "Business Manager", "photo": "2025/10/Lee-Headshot.jpg" },
+  { "slug": "djuna", "name": "Djuna", "title": "Office Greeter", "photo": "2025/01/Djuna_IMG_6570-copy.jpeg", "profile": false },
+  { "slug": "april", "name": "April", "title": "Beloved Friend", "photo": "2020/03/April.png", "profile": false }
+]

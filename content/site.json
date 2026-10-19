@@ -1,0 +1,60 @@
+{
+  "name": "John Lum Architecture",
+  "url": "https://johnlumarchitecture.com",
+  "description": "John Lum Architecture is a boutique San Francisco architecture firm known for striking designs, innovative use of materials, green technology and modern livability.",
+  "instagram": "https://www.instagram.com/johnlumarchitecture/",
+  "address": [
+    "3246 Seventeenth Street",
+    "San Francisco, CA 94110, USA"
+  ],
+  "contacts": [
+    {
+      "label": "Telephone",
+      "value": "415.558.9550",
+      "href": "tel:+14155589550"
+    },
+    {
+      "label": "Project Inquiries",
+      "value": "info@johnlumarchitecture.com",
+      "href": "mailto:info@johnlumarchitecture.com"
+    },
+    {
+      "label": "Employment",
+      "value": "careers@johnlumarchitecture.com",
+      "href": "mailto:careers@johnlumarchitecture.com"
+    },
+    {
+      "label": "Media",
+      "value": "media@johnlumarchitecture.com",
+      "href": "mailto:media@johnlumarchitecture.com"
+    }
+  ],
+  "about": [
+    "<strong>John Lum Architecture</strong> is a boutique San Francisco-based architecture firm known for striking designs, innovative use of materials, green technology, and modern livability, founded by John Lum in 1994.",
+    "Recognized for their site-specific designs, commitment to sustainable development, and attention to detail. Our bustling practice has completed 850+ projects ranging from new residential construction and remodels, to multifamily housing (SRO and micro-units), residential and commercial interiors, retail environments, educational buildings, and medical facilities.",
+    "Located in a converted laundry machine factory in the city's Mission District, the firm works with a diverse group of clients, combining efficiency and artistry to create warm interiors and exteriors primed for California living. Highly collaborative and deeply personal, the firm tailors each project to clients' distinguished tastes, creating spaces that have soul. Projects play with materiality and natural light, and focus on conservation and sense of place. Whether designing modernist interiors or eye-catching retail displays, the firm always adds an element of play and harmony."
+  ],
+  "officePhoto": {
+    "src": "https://johnlumarchitecture.com/wp-content/uploads/2020/02/06A6619-2__1800p-72dpi-500K.jpg",
+    "alt": "The John Lum Architecture studio in San Francisco's Mission District"
+  },
+  "categories": [
+    {
+      "key": "residential",
+      "label": "Residential"
+    },
+    {
+      "key": "commercial",
+      "label": "Commercial"
+    },
+    {
+      "key": "fabrication",
+      "label": "Fabrication"
+    },
+    {
+      "key": "on-the-boards",
+      "label": "On the Boards"
+    }
+  ],
+  "logo": "assets/logo.svg"
+}

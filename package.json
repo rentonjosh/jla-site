@@ -1,0 +1,21 @@
+{
+  "name": "johnlumarchitecture-site",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "John Lum Architecture website. Static HTML generated from JSON content, no framework.",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "build": "node build.mjs",
+    "preview": "node build.mjs --preview",
+    "serve": "npx --yes serve dist",
+    "import": "node scripts/import-wordpress.mjs",
+    "import:images": "node scripts/import-wordpress.mjs --download",
+    "photos": "npm install && node scripts/import-wordpress.mjs --download && node build.mjs && node build.mjs --preview"
+  },
+  "optionalDependencies": {
+    "sharp": "^0.34.0"
+  }
+}

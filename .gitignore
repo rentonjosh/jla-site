@@ -1,0 +1,7 @@
+node_modules/
+dist/
+preview/
+preview-demo/
+preview-artifact/
+.DS_Store
+*.part

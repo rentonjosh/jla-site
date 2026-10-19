@@ -1,0 +1,904 @@
+[
+  {
+    "slug": "courtyard",
+    "title": "Courtyard Residence",
+    "category": "residential",
+    "hero": {
+      "src": "https://johnlumarchitecture.com/wp-content/uploads/2020/05/Hermosa_01_HR-Higher-Res_2400_FINAL.jpg"
+    },
+    "featured": 2,
+    "location": "Menlo Park, CA",
+    "hover": {
+      "src": "https://johnlumarchitecture.com/wp-content/uploads/2019/05/Hermosa_37_LR.jpg"
+    },
+    "gallery": [
+      {
+        "src": "https://johnlumarchitecture.com/wp-content/uploads/2020/02/Hermosa_50_HR__1800p-72dpi-500K.jpg"
+      },
+      {
+        "src": "https://johnlumarchitecture.com/wp-content/uploads/2019/05/Hermosa_18_LR-2.jpg"
+      },
+      {
+        "src": "https://johnlumarchitecture.com/wp-content/uploads/2019/05/Hermosa_37_LR.jpg"
+      },
+      {
+        "src": "https://johnlumarchitecture.com/wp-content/uploads/2020/02/Hermosa_36_HR__1800p-72dpi-500K.jpg"
+      },
+      {
+        "src": "https://johnlumarchitecture.com/wp-content/uploads/2020/03/Hermosa_26_HR_1800P-72DPI-500K.jpg"
+      },
+      {
+        "src": "https://johnlumarchitecture.com/wp-content/uploads/2020/02/Hermosa_25_HR__1800p-72dpi-500K.jpg"
+      },
+      {
+        "src": "https://johnlumarchitecture.com/wp-content/uploads/2020/02/Hermosa_27_HR__1800p-72dpi-500K.jpg"
+      },
+      {
+        "src": "https://johnlumarchitecture.com/wp-content/uploads/2020/02/Hermosa_22_HR__1800p-72dpi-500K.jpg"
+      },
+      {
+        "src": "https://johnlumarchitecture.com/wp-content/uploads/2020/03/Hermosa_23_HR_1800P-72DPI-500K.jpg"
+      },
+      {
+        "src": "https://johnlumarchitecture.com/wp-content/uploads/2020/03/Hermosa_20_HR_1800P-72DPI-500K.jpg"
+      },
+      {
+        "src": "https://johnlumarchitecture.com/wp-content/uploads/2020/02/Hermosa_15_HR__1800p-72dpi-500K.jpg"
+      },
+      {
+        "src": "https://johnlumarchitecture.com/wp-content/uploads/2020/03/Hermosa_11_HR_1800P-72DPI-500K.jpg"
+      },
+      {
+        "src": "https://johnlumarchitecture.com/wp-content/uploads/2020/02/Hermosa_41_HR__1800p-72dpi-500K.jpg"
+      },
+      {
+        "src": "https://johnlumarchitecture.com/wp-content/uploads/2020/03/Hermosa_03_HR_1800P-72DPI-500K.jpg"
+      },
+      {
+        "src": "https://johnlumarchitecture.com/wp-content/uploads/2020/03/Hermosa_05_HR_1800P-72DPI-500K.jpg"
+      },
+      {
+        "src": "https://johnlumarchitecture.com/wp-content/uploads/2020/02/Hermosa_52_HR__1800p-72dpi-500K.jpg"
+      },
+      {
+        "src": "https://johnlumarchitecture.com/wp-content/uploads/2020/02/Hermosa_54_HR__1800p-72dpi-500K.jpg"
+      }
+    ],
+    "description": [],
+    "collaborators": [
+      {
+        "name": "Stephanie Zaharias Design",
+        "role": "Interior Design"
+      },
+      {
+        "name": "Art of Construction",
+        "role": "Contractor"
+      },
+      {
+        "name": "Paul Dyer",
+        "role": "Photographer"
+      }
+    ],
+    "recognition": [
+      {
+        "name": "Modern Luxury Silicon Valley"
+      },
+      {
+        "name": "Dwell",
+        "url": "https://www.dwell.com/article/courtyard-house-john-lum-architecture-fe8e824e"
+      },
+      {
+        "name": "Grand Designs"
+      },
+      {
+        "name": "88 Design Box",
+        "url": "https://88designbox.com/home-design/courtyard-house-by-john-lum-architecture-3641.html"
+      },
+      {
+        "name": "2018 AIA San Mateo County Merit Award, Residential Architecture",
+        "url": "https://www.aiasmc.org/2018-design-award-winners/"
+      }
+    ]
+  },
+  {
+    "slug": "maritime-modern-makeover",
+    "title": "Maritime Modern Makeover",
+    "category": "residential",
+    "hero": {
+      "src": "https://johnlumarchitecture.com/wp-content/uploads/2022/02/Sausalito_AR_1103.jpg"
+    },
+    "featured": 3
+  },
+  {
+    "slug": "golden-gate",
+    "title": "Golden Gate Heights",
+    "category": "residential",
+    "hero": {
+      "src": "https://johnlumarchitecture.com/wp-content/uploads/2022/05/Ortega_34_LR.jpg"
+    },
+    "featured": 1,
+    "location": "San Francisco, CA",
+    "hover": {
+      "src": "https://johnlumarchitecture.com/wp-content/uploads/2022/05/Ortega_15_LR.jpg"
+    },
+    "gallery": [
+      {
+        "src": "https://johnlumarchitecture.com/wp-content/uploads/2022/05/Ortega_40_LR.jpg"
+      },
+      {
+        "src": "https://johnlumarchitecture.com/wp-content/uploads/2022/05/Ortega_39_LR.jpg"
+      },
+      {
+        "src": "https://johnlumarchitecture.com/wp-content/uploads/2022/05/Ortega_36_LR.jpg"
+      },
+      {
+        "src": "https://johnlumarchitecture.com/wp-content/uploads/2022/05/Ortega_15_LR.jpg"
+      },
+      {
+        "src": "https://johnlumarchitecture.com/wp-content/uploads/2022/05/Ortega_16_LR.jpg"
+      },
+      {
+        "src": "https://johnlumarchitecture.com/wp-content/uploads/2022/05/Ortega_13_LR.jpg"
+      },
+      {
+        "src": "https://johnlumarchitecture.com/wp-content/uploads/2022/05/Ortega_10_LR.jpg"
+      },
+      {
+        "src": "https://johnlumarchitecture.com/wp-content/uploads/2022/05/Ortega_01_LR.jpg"
+      },
+      {
+        "src": "https://johnlumarchitecture.com/wp-content/uploads/2022/05/Ortega_08_LR.jpg"
+      },
+      {
+        "src": "https://johnlumarchitecture.com/wp-content/uploads/2022/05/Ortega_05_LR.jpg"
+      },
+      {
+        "src": "https://johnlumarchitecture.com/wp-content/uploads/2022/05/Ortega_11_LR.jpg"
+      },
+      {
+        "src": "https://johnlumarchitecture.com/wp-content/uploads/2022/05/Ortega_17_LR.jpg"
+      },
+      {
+        "src": "https://johnlumarchitecture.com/wp-content/uploads/2022/05/Ortega_25_LR.jpg"
+      },
+      {
+        "src": "https://johnlumarchitecture.com/wp-content/uploads/2022/05/Ortega_26_LR.jpg"
+      },
+      {
+        "src": "https://johnlumarchitecture.com/wp-content/uploads/2022/05/Ortega_27_LR.jpg"
+      },
+      {
+        "src": "https://johnlumarchitecture.com/wp-content/uploads/2022/05/Ortega_24_LR.jpg"
+      },
+      {
+        "src": "https://johnlumarchitecture.com/wp-content/uploads/2022/05/Ortega_23_LR.jpg"
+      },
+      {
+        "src": "https://johnlumarchitecture.com/wp-content/uploads/2022/05/Ortega_21_LR.jpg"
+      },
+      {
+        "src": "https://johnlumarchitecture.com/wp-content/uploads/2022/05/Ortega_18_LR.jpg"
+      },
+      {
+        "src": "https://johnlumarchitecture.com/wp-content/uploads/2022/05/Ortega_22_LR.jpg"
+      },
+      {
+        "src": "https://johnlumarchitecture.com/wp-content/uploads/2022/05/Ortega_30_LR.jpg"
+      },
+      {
+        "src": "https://johnlumarchitecture.com/wp-content/uploads/2022/05/Ortega_33_LR.jpg"
+      }
+    ],
+    "description": [
+      "Perched atop Golden Gate Heights with expansive views, this mundane, mid-century residence with compartmentalized floor plan and original fixtures and finishes, needed a major renovation.",
+      "We combined the client's penchant for Eastern European modernism with a Japanese wabi-sabi flair, updating the house to glam. The exterior was stripped of its rotted painted siding and replaced with natural cedar and cement plaster. A shou sugi ban screen provides a unifying base, camouflaging the garage doors with the only penetration being the orange glass front gate.",
+      "The first floor was gutted to create one large entertainment room. One side of the room features a raised platform for performance that doubles as a cozy inglenook. It is anchored by a folded brass sheet chimney breast and clad in shou sugi ban. Opposite, is an open kitchen featuring illuminated ceiling, live teak edge counters, and complex marble island face. A full-height wine cabinet distinguishes the dining area, cleverly hiding the original stairs. The lounge includes a vibrantly backlit wet bar. A folding window wall opens this space to the zen entry garden where stairs ascend to a hillside guest house.",
+      "The second level was transformed into the owner's quarters. One bedroom was converted into a sitting room for the primary suite, with a teak box separating the two that hide a walk-in closet. Another bedroom is used as an office, and the fourth bedroom was converted into a gym and guest room.",
+      "An ode to Japanese bath culture, the primary bathroom's white penny tiles recall river stones that define the Ofuro wooden-soaking tub and walk-in shower. Switchable smart glass windows deliver privacy without sacrificing natural light.",
+      "The craftsmanship is superb. The design successfully combines an eclectic mix of eras into a comprehensive whole, reflecting the ability to reposition a house into a showplace of design while working with a fairly constrained floor plan."
+    ],
+    "collaborators": [
+      {
+        "name": "Floyd Construction",
+        "role": "Contractor"
+      },
+      {
+        "name": "The Garden Route",
+        "role": "Landscape Architect"
+      },
+      {
+        "name": "Yedda Morrison",
+        "role": "Stylist"
+      },
+      {
+        "name": "Paul Dyer",
+        "role": "Photographer"
+      }
+    ],
+    "recognition": [
+      {
+        "name": "California Home + Design"
+      },
+      {
+        "name": "Houzz"
+      },
+      {
+        "name": "Kitchen & Bath Design News"
+      },
+      {
+        "name": "Plain Magazine"
+      },
+      {
+        "name": "Westside DIGS",
+        "url": "https://digs.net/the-intersection-of-modernism-wabi-sabi-john-lums-unique-redesign"
+      },
+      {
+        "name": "2023 AIASF Home Tours",
+        "url": "https://www.archandcity.org/2023-aiasf-home-tours-main"
+      }
+    ]
+  },
+  {
+    "slug": "gupta",
+    "title": "Gupta",
+    "category": "residential",
+    "hero": {
+      "src": "https://johnlumarchitecture.com/wp-content/uploads/2025/05/877-AspenWay-JLA-2845.jpg"
+    },
+    "featured": 4
+  },
+  {
+    "slug": "pole",
+    "title": "Pole Residence",
+    "category": "residential",
+    "hero": {
+      "src": "https://johnlumarchitecture.com/wp-content/uploads/2020/02/Sycamore_05__1800p-72dpi-500K.jpg"
+    },
+    "featured": 8
+  },
+  {
+    "slug": "potrero-hill-duplex",
+    "title": "Potrero Hill Duplex",
+    "category": "residential",
+    "hero": {
+      "src": "https://johnlumarchitecture.com/wp-content/uploads/2020/03/FF_Potrero_68-copy.jpeg"
+    }
+  },
+  {
+    "slug": "28th-street",
+    "title": "28th Street",
+    "category": "residential",
+    "hero": {
+      "src": "https://johnlumarchitecture.com/wp-content/uploads/2020/02/AmandaTeal.28thSt_062__1800p-72dpi-500K.jpg"
+    }
+  },
+  {
+    "slug": "stanford-faculty",
+    "title": "Stanford Faculty Subdivision",
+    "category": "residential",
+    "hero": {
+      "src": "https://johnlumarchitecture.com/wp-content/uploads/2025/01/Stanford_28.jpg"
+    }
+  },
+  {
+    "slug": "653-28th-street",
+    "title": "653 28th Street",
+    "category": "residential",
+    "hero": {
+      "src": "https://johnlumarchitecture.com/wp-content/uploads/2025/07/28th-St-Landscape.jpeg"
+    }
+  },
+  {
+    "slug": "eccentric-craftsman",
+    "title": "Eccentric Craftsman",
+    "category": "residential",
+    "hero": {
+      "src": "https://johnlumarchitecture.com/wp-content/uploads/2020/02/Jarrah_28_HR_number-removed__1800p-72dpi-500K.jpg"
+    }
+  },
+  {
+    "slug": "mill-valley",
+    "title": "Mill Valley Renovation",
+    "category": "residential",
+    "hero": {
+      "src": "https://johnlumarchitecture.com/wp-content/uploads/2024/06/2024-04-10_ONeilMansfield_73ShellRd-000010-CO-r1_1.jpg"
+    }
+  },
+  {
+    "slug": "glen-park",
+    "title": "Glen Park Residence",
+    "category": "residential",
+    "hero": {
+      "src": "https://johnlumarchitecture.com/wp-content/uploads/2021/08/46_Stillings_Ave_582-Edit.jpg"
+    }
+  },
+  {
+    "slug": "stanford-terrace",
+    "title": "Stanford Terrace",
+    "category": "residential",
+    "hero": {
+      "src": "https://johnlumarchitecture.com/wp-content/uploads/2026/02/Stanford_Residence_JLA-DJI_0646.jpg"
+    },
+    "featured": 9
+  },
+  {
+    "slug": "hillsborough",
+    "title": "Hillsborough Residence",
+    "category": "residential",
+    "hero": {
+      "src": "https://johnlumarchitecture.com/wp-content/uploads/2020/02/20151223_Hillsborough_8020__1800p-72dpi-500K.jpg"
+    }
+  },
+  {
+    "slug": "carolina",
+    "title": "Carolina",
+    "category": "residential",
+    "hero": {
+      "src": "https://johnlumarchitecture.com/wp-content/uploads/2025/05/Monica-Andrews-Facade2-LR.jpg"
+    }
+  },
+  {
+    "slug": "westen",
+    "title": "Westen",
+    "category": "residential",
+    "hero": {
+      "src": "https://johnlumarchitecture.com/wp-content/uploads/2021/06/MOD.269WallerSF_009.jpg"
+    },
+    "featured": 5
+  },
+  {
+    "slug": "third-ave",
+    "title": "Third Ave.",
+    "category": "residential",
+    "hero": {
+      "src": "https://johnlumarchitecture.com/wp-content/uploads/2024/10/13_3rdAve_s.jpg"
+    }
+  },
+  {
+    "slug": "menlo-park-townhouse",
+    "title": "Menlo Park Townhouse",
+    "category": "residential",
+    "hero": {
+      "src": "https://johnlumarchitecture.com/wp-content/uploads/2020/03/Shnier_08_HR__1800p-72dpi-500K.jpg"
+    }
+  },
+  {
+    "slug": "glide-munoz",
+    "title": "Glide Munoz",
+    "category": "residential",
+    "hero": {
+      "src": "https://johnlumarchitecture.com/wp-content/uploads/2020/03/U4A2409_1800P-72DPI-500K.jpg"
+    }
+  },
+  {
+    "slug": "26-street",
+    "title": "26th Street",
+    "category": "residential",
+    "hero": {
+      "src": "https://johnlumarchitecture.com/wp-content/uploads/2020/03/IMG_8708_1800P-72DPI-500K.jpg"
+    }
+  },
+  {
+    "slug": "grand-view",
+    "title": "Grand View",
+    "category": "residential",
+    "hero": {
+      "src": "https://johnlumarchitecture.com/wp-content/uploads/2020/03/Grandview_19_HR_1800P-72DPI-500K-1.jpg"
+    }
+  },
+  {
+    "slug": "sunset-overlook",
+    "title": "Sunset Overlook",
+    "category": "residential",
+    "hero": {
+      "src": "https://johnlumarchitecture.com/wp-content/uploads/2020/02/1sunsetoverlook__1800p-72dpi-500K.jpg"
+    }
+  },
+  {
+    "slug": "christoffersen-bath",
+    "title": "Christoffersen Bath",
+    "category": "residential",
+    "hero": {
+      "src": "https://johnlumarchitecture.com/wp-content/uploads/2020/02/St_Germain_01_HR__1800p-72dpi-500K.jpg"
+    }
+  },
+  {
+    "slug": "friedman",
+    "title": "Friedman",
+    "category": "residential",
+    "hero": {
+      "src": "https://johnlumarchitecture.com/wp-content/uploads/2020/03/shot09F__1800p-72dpi-500K.jpg"
+    }
+  },
+  {
+    "slug": "roosevelt",
+    "title": "Roosevelt",
+    "category": "residential",
+    "hero": {
+      "src": "https://johnlumarchitecture.com/wp-content/uploads/2020/02/Roosevelt_15_HR__1800p-72dpi-500K.jpg"
+    }
+  },
+  {
+    "slug": "kent-woodlands",
+    "title": "Kent Woodlands",
+    "category": "residential",
+    "hero": {
+      "src": "https://johnlumarchitecture.com/wp-content/uploads/2020/02/Rancheria_335__1800p-72dpi-500K.jpg"
+    }
+  },
+  {
+    "slug": "kravis",
+    "title": "Kravis Residence",
+    "category": "residential",
+    "hero": {
+      "src": "https://johnlumarchitecture.com/wp-content/uploads/2020/02/MG_1514-1__1800p-72dpi-500K.jpg"
+    }
+  },
+  {
+    "slug": "upper-happy-valley",
+    "title": "Upper Happy Valley",
+    "category": "residential",
+    "hero": {
+      "src": "https://johnlumarchitecture.com/wp-content/uploads/2020/02/shot01F__1800p-72dpi-500K.jpg"
+    }
+  },
+  {
+    "slug": "via-delizia",
+    "title": "Via Delizia",
+    "category": "residential",
+    "hero": {
+      "src": "https://johnlumarchitecture.com/wp-content/uploads/2025/06/Via-Delizia-Exteriors-2.jpg"
+    },
+    "featured": 6
+  },
+  {
+    "slug": "palo-alto-residence",
+    "title": "Palo Alto Residence",
+    "category": "residential",
+    "hero": {
+      "src": "https://johnlumarchitecture.com/wp-content/uploads/2020/02/cWakelyWohlSc004__1800p-72dpi-500K.jpg"
+    }
+  },
+  {
+    "slug": "hunt-filmore",
+    "title": "Hunt-Filmore",
+    "category": "residential",
+    "hero": {
+      "src": "https://johnlumarchitecture.com/wp-content/uploads/2021/09/DSC00135-copy.jpg"
+    }
+  },
+  {
+    "slug": "roanoke",
+    "title": "Roanoke",
+    "category": "residential",
+    "hero": {
+      "src": "https://johnlumarchitecture.com/wp-content/uploads/2025/10/6-Roanoak-SF-44.jpg"
+    },
+    "featured": 7
+  },
+  {
+    "slug": "atherton",
+    "title": "Atherton Residence",
+    "category": "residential",
+    "hero": {
+      "src": "https://johnlumarchitecture.com/wp-content/uploads/2020/02/201211_macdonald_034__1800p-72dpi-500K.jpg"
+    }
+  },
+  {
+    "slug": "eberhart",
+    "title": "Eberhart",
+    "category": "residential",
+    "hero": {
+      "src": "https://johnlumarchitecture.com/wp-content/uploads/2020/04/EberhartExt_no-weeds-edited_1800P-72DPI-500K.jpg"
+    }
+  },
+  {
+    "slug": "dolores-heights",
+    "title": "Dolores Heights",
+    "category": "residential",
+    "hero": {
+      "src": "https://johnlumarchitecture.com/wp-content/uploads/2020/02/Liberty_24_HR__1800p-72dpi-500K.jpg"
+    }
+  },
+  {
+    "slug": "sunset-idea-house",
+    "title": "Sunset Idea House",
+    "category": "residential",
+    "hero": {
+      "src": "https://johnlumarchitecture.com/wp-content/uploads/2020/05/bret-Sunset-elevation_500K.jpg"
+    }
+  },
+  {
+    "slug": "nordquist",
+    "title": "Nordquist",
+    "category": "residential",
+    "hero": {
+      "src": "https://johnlumarchitecture.com/wp-content/uploads/2020/05/Nordquist7355__1800p-72dpi-500K.jpg"
+    }
+  },
+  {
+    "slug": "beard-chu",
+    "title": "Beard Chu Residence",
+    "category": "residential",
+    "hero": {
+      "src": "https://johnlumarchitecture.com/wp-content/uploads/2020/04/BeardChushot1_3182-edited_1800P-72DPI-500K.jpg"
+    }
+  },
+  {
+    "slug": "pickering",
+    "title": "Pickering",
+    "category": "residential",
+    "hero": {
+      "src": "https://johnlumarchitecture.com/wp-content/uploads/2020/04/PickeringShot5_1251-edited_1800P-72DPI-500K.jpg"
+    }
+  },
+  {
+    "slug": "19th-street",
+    "title": "19th Street",
+    "category": "residential",
+    "hero": {
+      "src": "https://johnlumarchitecture.com/wp-content/uploads/2020/02/19th_01_HR__1800p-72dpi-500K-3.jpg"
+    }
+  },
+  {
+    "slug": "mcgann-2",
+    "title": "McGann ORSC II",
+    "category": "commercial",
+    "hero": {
+      "src": "https://johnlumarchitecture.com/wp-content/uploads/2025/08/Grant_McGann_26_web.jpg"
+    },
+    "featured": 10
+  },
+  {
+    "slug": "bella-vista",
+    "title": "Bella Vista Eye Clinic",
+    "category": "commercial",
+    "hero": {
+      "src": "https://johnlumarchitecture.com/wp-content/uploads/2020/02/shot01F__1800p-72dpi-500K-1.jpg"
+    }
+  },
+  {
+    "slug": "eye-gotcha",
+    "title": "Eye Gotcha",
+    "category": "commercial",
+    "hero": {
+      "src": "https://johnlumarchitecture.com/wp-content/uploads/2020/02/shot01f__1800p-72dpi-500K.jpg"
+    }
+  },
+  {
+    "slug": "olivet",
+    "title": "Olivet",
+    "category": "commercial",
+    "hero": {
+      "src": "https://johnlumarchitecture.com/wp-content/uploads/2020/03/Olivet_17_LR_2400P-72DPI.jpg"
+    }
+  },
+  {
+    "slug": "battery-ventures-i",
+    "title": "Battery Ventures I",
+    "category": "commercial",
+    "hero": {
+      "src": "https://johnlumarchitecture.com/wp-content/uploads/2020/02/shot03F__1800p-72dpi-500K-1.jpg"
+    }
+  },
+  {
+    "slug": "battery-ventures-ii",
+    "title": "Battery Ventures II",
+    "category": "commercial",
+    "hero": {
+      "src": "https://johnlumarchitecture.com/wp-content/uploads/2020/02/BV_10_HR__1800p-72dpi-500K.jpg"
+    }
+  },
+  {
+    "slug": "eye-carumba",
+    "title": "Eye Carumba",
+    "category": "commercial",
+    "hero": {
+      "src": "https://johnlumarchitecture.com/wp-content/uploads/2020/02/EyeCarumbaSRP_A_050207__1800p-72dpi-500K.jpg"
+    }
+  },
+  {
+    "slug": "reach-capital",
+    "title": "Reach Capital",
+    "category": "commercial",
+    "hero": {
+      "src": "https://johnlumarchitecture.com/wp-content/uploads/2020/02/Reach_Cap_02_HR__1800p-72dpi-500K.jpg"
+    }
+  },
+  {
+    "slug": "lennar-welcome-center",
+    "title": "Lennar Welcome Center",
+    "category": "commercial",
+    "hero": {
+      "src": "https://johnlumarchitecture.com/wp-content/uploads/2020/04/shot04F-edited_1800P-72DPI-500K-1.jpg"
+    }
+  },
+  {
+    "slug": "mcgann",
+    "title": "McGann ORSC",
+    "category": "commercial",
+    "hero": {
+      "src": "https://johnlumarchitecture.com/wp-content/uploads/2020/02/McGann-ORSCcambridge-sd_100__1800p-72dpi-500K.jpg"
+    }
+  },
+  {
+    "slug": "convert-shoes",
+    "title": "Convert Shoes",
+    "category": "commercial",
+    "hero": {
+      "src": "https://johnlumarchitecture.com/wp-content/uploads/2020/02/Shot02F__1800p-72dpi-500K.jpg"
+    }
+  },
+  {
+    "slug": "jla-office",
+    "title": "JLA Office",
+    "category": "commercial",
+    "hero": {
+      "src": "https://johnlumarchitecture.com/wp-content/uploads/2020/02/06A6619-2__1800p-72dpi-500K.jpg"
+    }
+  },
+  {
+    "slug": "convert-man",
+    "title": "Convert Man",
+    "category": "commercial",
+    "hero": {
+      "src": "https://johnlumarchitecture.com/wp-content/uploads/2020/03/shot01F_1800P-72DPI-500K.jpg"
+    }
+  },
+  {
+    "slug": "cafe-maritime",
+    "title": "Café Maritime",
+    "category": "commercial",
+    "hero": {
+      "src": "https://johnlumarchitecture.com/wp-content/uploads/2020/02/Cafe-Maritime-view-towards-street__1800p-72dpi-500K.jpg"
+    }
+  },
+  {
+    "slug": "asiasf",
+    "title": "Asia SF",
+    "category": "commercial",
+    "hero": {
+      "src": "https://johnlumarchitecture.com/wp-content/uploads/2020/03/asiasf.d_1800P-72DPI-500K.jpg"
+    }
+  },
+  {
+    "slug": "barber-lounge",
+    "title": "Barber Lounge",
+    "category": "commercial",
+    "hero": {
+      "src": "https://johnlumarchitecture.com/wp-content/uploads/2020/02/BarberSRP_F_041707__1800p-72dpi-500K.jpg"
+    }
+  },
+  {
+    "slug": "luna-lounge",
+    "title": "Luna Lounge",
+    "category": "commercial",
+    "hero": {
+      "src": "https://johnlumarchitecture.com/wp-content/uploads/2020/02/LunaC__1800p-72dpi-500K.jpg"
+    }
+  },
+  {
+    "slug": "ghost-tree-1",
+    "title": "Ghost Tree 1",
+    "category": "fabrication",
+    "hero": {
+      "src": "https://johnlumarchitecture.com/wp-content/uploads/2020/06/Ghost_02_HR_500K.jpg"
+    }
+  },
+  {
+    "slug": "blake-kuwahara",
+    "title": "Blake Kuwahara",
+    "category": "fabrication",
+    "hero": {
+      "src": "https://johnlumarchitecture.com/wp-content/uploads/2020/02/3.6_Detail__1800p-72dpi-500K.jpg"
+    }
+  },
+  {
+    "slug": "eye-gotcha-display",
+    "title": "Eye Gotcha Store Displays",
+    "category": "fabrication",
+    "hero": {
+      "src": "https://johnlumarchitecture.com/wp-content/uploads/2020/02/shot05F__1800p-72dpi-500K.jpg"
+    }
+  },
+  {
+    "slug": "dining-womb",
+    "title": "Dining Womb",
+    "category": "fabrication",
+    "hero": {
+      "src": "https://johnlumarchitecture.com/wp-content/uploads/2020/02/shot15F__1800p-72dpi-500K.jpg"
+    }
+  },
+  {
+    "slug": "lounge",
+    "title": "Offspring Collection: Chaise Lounge",
+    "category": "fabrication",
+    "hero": {
+      "src": "https://johnlumarchitecture.com/wp-content/uploads/2020/02/shot05__1800p-72dpi-500K.jpg"
+    }
+  },
+  {
+    "slug": "blob",
+    "title": "Offspring Collection: The Blob",
+    "category": "fabrication",
+    "hero": {
+      "src": "https://johnlumarchitecture.com/wp-content/uploads/2020/02/3offspring-011__1800p-72dpi-500K.jpg"
+    }
+  },
+  {
+    "slug": "ghost-tree-2",
+    "title": "Ghost Tree 2",
+    "category": "fabrication",
+    "hero": {
+      "src": "https://johnlumarchitecture.com/wp-content/uploads/2020/06/Ghost_13_HR_500K.jpg"
+    }
+  },
+  {
+    "slug": "cube",
+    "title": "Cube II",
+    "category": "fabrication",
+    "hero": {
+      "src": "https://johnlumarchitecture.com/wp-content/uploads/2020/02/JohnLumChair3514_retouc-reduce__1800p-72dpi-500K.jpg"
+    }
+  },
+  {
+    "slug": "a-play-odyssey",
+    "title": "A Play Odyssey",
+    "category": "fabrication",
+    "hero": {
+      "src": "https://johnlumarchitecture.com/wp-content/uploads/2020/05/pirate-render_500K.jpg"
+    }
+  },
+  {
+    "slug": "sound-shala",
+    "title": "Sound Shala",
+    "category": "fabrication",
+    "hero": {
+      "src": "https://johnlumarchitecture.com/wp-content/uploads/2020/02/SoundShala_Cover.png"
+    }
+  },
+  {
+    "slug": "cabin-fever",
+    "title": "Cabin Fever",
+    "category": "fabrication",
+    "hero": {
+      "src": "https://johnlumarchitecture.com/wp-content/uploads/2020/05/CF2012-DNA-and-TRANSITIONAL_8_Page_01_500K.jpg"
+    }
+  },
+  {
+    "slug": "sanchez-townhouses",
+    "title": "Sanchez Townhouses",
+    "category": "on-the-boards",
+    "hero": {
+      "src": "https://johnlumarchitecture.com/wp-content/uploads/2026/07/Lum-Sanchez-Render-1.jpg"
+    }
+  },
+  {
+    "slug": "reddy",
+    "title": "Reddy",
+    "category": "on-the-boards",
+    "hero": {
+      "src": "https://johnlumarchitecture.com/wp-content/uploads/2026/06/Reddy-Render-pt-2-2-1.jpg"
+    }
+  },
+  {
+    "slug": "agramonte",
+    "title": "Agramonte",
+    "category": "on-the-boards",
+    "hero": {
+      "src": "https://johnlumarchitecture.com/wp-content/uploads/2026/04/Agramonte-Render-1.jpg"
+    }
+  },
+  {
+    "slug": "baylor",
+    "title": "Baylor",
+    "category": "on-the-boards",
+    "hero": {
+      "src": "https://johnlumarchitecture.com/wp-content/uploads/2026/07/BAYLOR-rendering-back.png"
+    }
+  },
+  {
+    "slug": "atherton-ii",
+    "title": "Atherton Residence II",
+    "category": "on-the-boards",
+    "hero": {
+      "src": "https://johnlumarchitecture.com/wp-content/uploads/2025/10/SARGENT-FRONT-YARD-FINAL.jpg"
+    }
+  },
+  {
+    "slug": "atherton-residence-i",
+    "title": "Atherton Residence I",
+    "category": "on-the-boards",
+    "hero": {
+      "src": "https://johnlumarchitecture.com/wp-content/uploads/2026/04/Ath-1.jpg"
+    }
+  },
+  {
+    "slug": "churchill-residence",
+    "title": "Churchill Residence",
+    "category": "on-the-boards",
+    "hero": {
+      "src": "https://johnlumarchitecture.com/wp-content/uploads/2026/07/Lin-Liu-Render-1.jpg"
+    }
+  },
+  {
+    "slug": "upper-happy-valley-adu",
+    "title": "Upper Happy Valley ADU",
+    "category": "on-the-boards",
+    "hero": {
+      "src": "https://johnlumarchitecture.com/wp-content/uploads/2026/07/Fujimoto-II-ADU-Render-2.jpg"
+    }
+  },
+  {
+    "slug": "aspegren",
+    "title": "Aspegren",
+    "category": "on-the-boards",
+    "hero": {
+      "src": "https://johnlumarchitecture.com/wp-content/uploads/2026/07/Aspegren-Render-1.jpg"
+    }
+  },
+  {
+    "slug": "stoner-pool",
+    "title": "Stoner Pool",
+    "category": "on-the-boards",
+    "hero": {
+      "src": "https://johnlumarchitecture.com/wp-content/uploads/2026/04/Spil-2.jpg"
+    }
+  },
+  {
+    "slug": "portola-valley-residence",
+    "title": "Portola Valley Residence",
+    "category": "on-the-boards",
+    "hero": {
+      "src": "https://johnlumarchitecture.com/wp-content/uploads/2020/04/Dobrenski_front_1800P-72DPI-500K.jpg"
+    }
+  },
+  {
+    "slug": "hillsborough-residence",
+    "title": "La Senda Residence",
+    "category": "on-the-boards",
+    "hero": {
+      "src": "https://johnlumarchitecture.com/wp-content/uploads/2020/06/CHEN-DENG_3-200623-HighQuality.jpg"
+    }
+  },
+  {
+    "slug": "cass-lee",
+    "title": "Cass Lee Residence",
+    "category": "on-the-boards",
+    "hero": {
+      "src": "https://johnlumarchitecture.com/wp-content/uploads/2023/07/Redwood2_Website.jpg"
+    }
+  },
+  {
+    "slug": "bonny-doon-retreat",
+    "title": "Bonny Doon Retreat",
+    "category": "on-the-boards",
+    "hero": {
+      "src": "https://johnlumarchitecture.com/wp-content/uploads/2020/06/Bonny-Doon-7-200623.jpg"
+    }
+  },
+  {
+    "slug": "mesa",
+    "title": "BCLT Mesa",
+    "category": "on-the-boards",
+    "hero": {
+      "src": "https://johnlumarchitecture.com/wp-content/uploads/2020/06/Mesa-Render-5b-200616_500K.jpg"
+    }
+  },
+  {
+    "slug": "habitat-for-humanity",
+    "title": "Habitat for Humanity",
+    "category": "on-the-boards",
+    "hero": {
+      "src": "https://johnlumarchitecture.com/wp-content/uploads/2024/11/BCLT-Wharf-B-200527-12x10-1.jpeg"
+    }
+  },
+  {
+    "slug": "ucb-eyewear",
+    "title": "UC Berkeley Eyewear Retail Center",
+    "category": "on-the-boards",
+    "hero": {
+      "src": "https://johnlumarchitecture.com/wp-content/uploads/2025/08/230911_ViewC.jpg"
+    }
+  }
+]

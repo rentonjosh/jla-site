@@ -1,0 +1,48 @@
+# Copies every project, press and team photo (plus project text and credits) from the WordPress site into this repo.
+# Run it from the Actions tab: "Import photos from WordPress" > Run workflow. Safe to run again; finished photos are kept.
+name: Import photos from WordPress
+
+on:
+  workflow_dispatch:
+    inputs:
+      overwrite:
+        description: Replace project text, credits and galleries that are already filled in
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: photos
+  cancel-in-progress: false
+
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install the image resizer
+        run: npm install --no-audit --no-fund
+
+      - name: Import from WordPress
+        run: node scripts/import-wordpress.mjs --download ${{ inputs.overwrite && '--overwrite' || '' }}
+
+      - name: Check the site still builds
+        run: node build.mjs
+
+      - name: Save photos and content to the repo
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898281+github-actions[bot]@users.noreply.github.com"
+          git add content images
+          if git diff --cached --quiet; then echo "Nothing new to save."; exit 0; fi
+          echo "Saving $(git diff --cached --name-only -- images | wc -l) photo files"
+          git commit -q -m "Import photos and project content from WordPress"
+          git push
