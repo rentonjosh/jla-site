@@ -179,9 +179,16 @@
     const root = document.createElement('div');
     root.className = 'lb'; root.hidden = true;
     root.setAttribute('role', 'dialog'); root.setAttribute('aria-modal', 'true'); root.setAttribute('aria-label', 'Enlarged photo');
-    root.innerHTML = '<div class="lb-shade"></div><img class="lb-img" alt=""><button type="button" class="lb-close sr-only">Close photo</button>';
+    const tri = d => `<svg viewBox="0 0 11 13" aria-hidden="true"><path d="${d}"/></svg>`;
+    root.innerHTML = '<div class="lb-shade"></div><img class="lb-img" alt="">'
+      + `<button type="button" class="lb-nav lb-prev" aria-label="Previous photo">${tri('M0 6.5 11 0v13z')}</button>`
+      + `<button type="button" class="lb-nav lb-next" aria-label="Next photo">${tri('M11 6.5 0 13V0z')}</button>`
+      + '<button type="button" class="lb-close sr-only">Close photo</button>';
     document.body.append(root);
     const shade = root.querySelector('.lb-shade'), im = root.querySelector('.lb-img'), closeB = root.querySelector('.lb-close');
+    const navs = [...root.querySelectorAll('.lb-nav')];
+    if (items.length < 2) navs.forEach(b => b.hidden = true);
+    const fade = (on, ms) => [shade, ...navs].map(e => e.animate([{ opacity: on ? 0 : 1 }, { opacity: on ? 1 : 0 }], { duration: ms, easing: on ? 'ease-out' : 'ease-in', fill: on ? 'both' : 'forwards' }));
     const DUR = reduce ? 1 : 560, EASE = 'cubic-bezier(.22, 1, .36, 1)';
     let cur = -1, busy = false, rect = null;
 
@@ -193,8 +200,10 @@
     // the whole, uncropped photo, as large as the window allows
     const fitRect = n => {
       const [w, h] = size(n), m = Math.max(16, Math.min(innerWidth, innerHeight) * .04);
-      const k = Math.min((innerWidth - 2 * m) / w, (innerHeight - 2 * m) / h);
-      return { x: (innerWidth - w * k) / 2, y: (innerHeight - h * k) / 2, w: w * k, h: h * k };
+      const phone = innerWidth < 640, many = items.length > 1;
+      const mx = !phone && many ? Math.max(m, 76) : m, top = m, bottom = phone && many ? 76 : m;
+      const k = Math.min((innerWidth - 2 * mx) / w, (innerHeight - top - bottom) / h);
+      return { x: (innerWidth - w * k) / 2, y: top + (innerHeight - top - bottom - h * k) / 2, w: w * k, h: h * k };
     };
     const place = r => Object.assign(im.style, { left: r.x + 'px', top: r.y + 'px', width: r.w + 'px', height: r.h + 'px' });
     // transform + clip that make the full-size photo look exactly like its cropped thumbnail
@@ -225,8 +234,7 @@
       t.style.visibility = 'hidden';
       const start = fromThumb(tr, rect);
       im.animate([start, { transform: 'none', clipPath: 'inset(0px 0px 0px 0px)' }], { duration: DUR, easing: EASE });
-      shade.animate([{ opacity: 0 }, { opacity: 1 }], { duration: DUR * .8, easing: 'ease-out', fill: 'both' })
-        .finished.then(() => { busy = false; });
+      fade(true, DUR * .8)[0].finished.then(() => { busy = false; });
       loadFull(n);
       closeB.focus({ preventScroll: true });
     };
@@ -238,11 +246,11 @@
       const anim = onScreen(tr)
         ? im.animate([{ transform: 'none', clipPath: 'inset(0px 0px 0px 0px)' }, fromThumb(tr, rect)], { duration: DUR * .85, easing: EASE, fill: 'forwards' })
         : im.animate([{ opacity: 1, transform: 'none' }, { opacity: 0, transform: 'scale(.96)' }], { duration: DUR * .6, easing: EASE, fill: 'forwards' });
-      shade.animate([{ opacity: 1 }, { opacity: 0 }], { duration: DUR * .7, easing: 'ease-in', fill: 'forwards' });
+      fade(false, DUR * .7);
       anim.finished.then(() => {
         t.style.visibility = '';
         root.hidden = true; lock(false);
-        im.getAnimations().forEach(a => a.cancel()); shade.getAnimations().forEach(a => a.cancel());
+        [im, shade, ...navs].forEach(e => e.getAnimations().forEach(a => a.cancel()));
         im.removeAttribute('src');
         items[cur].focus({ preventScroll: true });
         busy = false;
@@ -272,16 +280,22 @@
     let swiped = false;
     shade.addEventListener('click', () => { if (swiped) { swiped = false; return; } close(); });
     closeB.addEventListener('click', close);
+    navs[0].addEventListener('click', () => go(-1));
+    navs[1].addEventListener('click', () => go(1));
     document.addEventListener('keydown', e => {
       if (root.hidden) return;
       if (e.key === 'Escape') { e.preventDefault(); close(); }
       else if (e.key === 'ArrowRight') { e.preventDefault(); go(1); }
       else if (e.key === 'ArrowLeft') { e.preventDefault(); go(-1); }
-      else if (e.key === 'Tab') { e.preventDefault(); closeB.focus(); }
+      else if (e.key === 'Tab') {                       // focus stays on the enlarged photo's controls
+        e.preventDefault();
+        const f = [...root.querySelectorAll('button:not([hidden])')];
+        f[(f.indexOf(document.activeElement) + (e.shiftKey ? -1 : 1) + f.length) % f.length].focus();
+      }
     });
     root.addEventListener('wheel', e => { e.preventDefault(); if (Math.abs(e.deltaY) > 8) close(); }, { passive: false });
     let sx = null, sy = 0;
-    root.addEventListener('pointerdown', e => { sx = e.clientX; sy = e.clientY; });
+    root.addEventListener('pointerdown', e => { if (e.target.closest('.lb-nav')) { sx = null; return; } sx = e.clientX; sy = e.clientY; });
     root.addEventListener('pointerup', e => {
       if (sx === null) return;
       const dx = e.clientX - sx, dy = e.clientY - sy; sx = null;

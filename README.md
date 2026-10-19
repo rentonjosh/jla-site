@@ -51,7 +51,7 @@ Asset links carry a version stamp, so a new deploy is never hidden behind a brow
 
 Search (header) covers projects, press, awards, events, people and pages.
 
-On project pages, clicking a photo enlarges it in place: it grows from its spot to fill the screen, uncropped, over a shaded and blurred page. Click the shaded area, press Esc or scroll to put it back. Arrow keys or a sideways swipe move to the next photo while enlarged.
+On project pages, clicking a photo enlarges it in place: it grows from its spot to fill the screen, uncropped, over a shaded and blurred page. Click the shaded area, press Esc or scroll to put it back. The small triangles at the sides (under the photo on phones), the arrow keys or a sideways swipe move to the next photo while enlarged.
 
 `dist/_redirects` maps every old WordPress URL (`/project/golden-gate/`, `/live/`, `/our-process/` …) to its new home with a 301, so existing Google rankings and press links keep working. Netlify and Cloudflare Pages read this file as is.
 
