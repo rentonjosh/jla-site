@@ -35,8 +35,10 @@
     "Located in a converted laundry machine factory in the city's Mission District, the firm works with a diverse group of clients, combining efficiency and artistry to create warm interiors and exteriors primed for California living. Highly collaborative and deeply personal, the firm tailors each project to clients' distinguished tastes, creating spaces that have soul. Projects play with materiality and natural light, and focus on conservation and sense of place. Whether designing modernist interiors or eye-catching retail displays, the firm always adds an element of play and harmony."
   ],
   "officePhoto": {
-    "src": "https://johnlumarchitecture.com/wp-content/uploads/2020/02/06A6619-2__1800p-72dpi-500K.jpg",
-    "alt": "The John Lum Architecture studio in San Francisco's Mission District"
+    "src": "images/site/2020-02-06A6619-2__1800p-72dpi-500K.jpg",
+    "alt": "The John Lum Architecture studio in San Francisco's Mission District",
+    "w": 1701,
+    "h": 1200
   },
   "categories": [
     {
