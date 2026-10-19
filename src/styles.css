@@ -6,11 +6,11 @@
   --ink-3: #8a8a8a;
   --line: #d6d6d6;
   --tint: #ececec;
-  --gutter: clamp(16px, 2.9vw, 56px);
-  --gap: clamp(20px, 6vw, 112px);          /* between columns: about twice the margin, so each photo reads on its own */
-  --row-gap: clamp(40px, 7vw, 132px);
-  --g-inset: clamp(0px, 7vw, 140px);        /* project galleries sit inside the page margin */
-  --g-col: clamp(20px, 5vw, 96px);
+  --gutter: clamp(20px, 5vw, 96px);         /* one measure: page margin = space between photos, across and down */
+  --gap: var(--gutter);
+  --row-gap: var(--gutter);
+  --g-inset: 0px;
+  --g-col: var(--gutter);
   --header-h: clamp(52px, 3.6vw, 64px);
   --ease: cubic-bezier(.22, 1, .36, 1);      /* long, soft settle for anything that moves */
   --fade: cubic-bezier(.4, 0, .2, 1);       /* opacity */
