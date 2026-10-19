@@ -68,7 +68,7 @@ h1, h2, h3 { font-weight: 400; }
 /* the mark sits tight in the top-left corner, as in the mockups, outside the content gutter */
 .logo { justify-self: start; display: flex; align-items: center; height: 100%; margin-left: calc(max(8px, .5vw) - var(--gutter)); }
 .logo img { height: calc(var(--header-h) * .62); width: auto; }
-.wordmark { font-size: var(--t-nav); font-weight: 500; letter-spacing: .02em; text-transform: uppercase; white-space: nowrap; }
+.wordmark { font-size: var(--t-nav); font-weight: 500; letter-spacing: 0; white-space: nowrap; }
 .site-nav { justify-self: end; display: flex; align-items: center; gap: clamp(18px, 2vw, 40px); font-size: var(--t-nav); }
 .site-nav > a, .search-toggle { position: relative; padding: 6px 0; }
 .site-nav > a::after, .tabs a::after {
