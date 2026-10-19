@@ -159,9 +159,6 @@ h1, h2, h3 { font-weight: 400; }
 }
 .statement-index a:hover::after, .statement-more a:hover::after { transform: scaleX(1); }
 .statement-more { font-size: var(--t-nav); color: var(--ink-2); }
-/* project counts: small raised figures after a category name */
-.count { font-size: .52em; font-weight: 400; color: var(--ink-3); vertical-align: 0; position: relative; top: -.85em; margin-left: .18em; font-variant-numeric: tabular-nums; letter-spacing: 0; }
-.tabs .count { font-size: .62em; top: -.7em; }
 
 /* ---------- works: masonry grid + hover ---------- */
 .masonry {

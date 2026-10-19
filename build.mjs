@@ -164,12 +164,12 @@ ${featured.map((x, i) => {
 </section>
 <section class="statement" aria-label="The studio">
   <p class="statement-text">${esc(site.statement)}</p>
-  <ul class="statement-index">${cats.map(c => `<li><a href="${href('', catPath(c.key))}">${esc(c.label)}<sup class="count">${projects.filter(x => x.category === c.key).length}</sup></a></li>`).join('')}</ul>
+  <ul class="statement-index">${cats.map(c => `<li><a href="${href('', catPath(c.key))}">${esc(c.label)}</a></li>`).join('')}</ul>
   <p class="statement-more"><a href="${href('', 'contact')}">About the studio</a></p>
 </section>`, { bodyClass: 'is-home', image: srcRoot(featured[0].hero.src) });
 
 /* ---------- works ---------- */
-const workTabs = cats.map(c => [catPath(c.key), `${c.label}<sup class="count">${projects.filter(x => x.category === c.key).length}</sup>`, c.label]);
+const workTabs = cats.map(c => [catPath(c.key), c.label]);
 const workPages = [];
 for (const c of cats) {
   const p = catPath(c.key);
@@ -248,7 +248,7 @@ ${rows.length ? `    <section class="gallery" id="photos" aria-label="Photos">
 ${rows.map(r => `      <div class="gallery-row is-${r.kind}${r.side ? ' is-' + r.side : ''}">${r.items.map(g =>
     `<figure${box(g, DEMO_GALLERY[gallery.indexOf(g) % DEMO_GALLERY.length])}>${zoom(p, g, img(p, g, { alt: g.alt || x.title, sizes: r.kind === 'pair' ? 'half' : 'full' }), g.alt || x.title)}</figure>`).join('')}</div>`).join('\n')}
     </section>\n` : ''}${more.length ? `    <section class="p-more">
-      <header class="p-more-head"><h2>More ${esc(catLabel(x.category))}</h2><a href="${href(p, catPath(x.category))}">All ${sibs.length} projects</a></header>
+      <header class="p-more-head"><h2>More ${esc(catLabel(x.category))}</h2><a href="${href(p, catPath(x.category))}">All ${esc(catLabel(x.category))}</a></header>
       <div class="more-grid">${more.map((m, n) => card(p, m, n, { forceLandscape: true })).join('')}</div>
     </section>\n` : ''}  </div>
 </article>`, { description: lead || `${x.title}, a ${catLabel(x.category).toLowerCase()} project by ${site.name}.`, image: srcRoot(x.hero.src), bodyClass: 'is-project' });

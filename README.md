@@ -41,7 +41,7 @@ Node 18 or newer. `npm install` adds `sharp`, which the photo import uses to res
 
 | URL | Page |
 |---|---|
-| `/` | Slideshow of `featured` projects (drag, sideways swipe or arrow keys; loops), then the studio statement from `site.json` and category links with project counts |
+| `/` | Slideshow of `featured` projects (drag, sideways swipe or arrow keys; loops), then the studio statement from `site.json` and category links |
 | `/works/` `/works/commercial/` `/works/fabrication/` `/works/on-the-boards/` | Selected Works, masonry grid |
 | `/works/<slug>/` | Project page: screen-height hero the page slides over, a sticky bar (Information, Photos, Next project), the first description paragraph as the lead with the rest beside a facts column, a composed gallery, and three more projects from the same category |
 | `/press/` `/press/awards/` `/press/events/` | Press |
