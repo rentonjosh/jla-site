@@ -62,39 +62,54 @@ const CATEGORY = name => {
   return null;
 };
 
+// Divi stores each project as shortcodes. WordPress "smart quotes" the attribute quotes inside them
+// (gallery_ids=”1,2,3”), so those are normalised first. A project page has a sidebar text block
+// (LOCATION / CREDITS / RECOGNITION) and a main text block (title, tagline, description); each block is
+// read on its own and split at those labels.
+const LABEL = /^(location|credits|collaborators|team|recognition|press|awards|publications)\s*:?\s*(.*)$/i;
+const SECTION = { location: 'location', credits: 'credits', collaborators: 'credits', team: 'credits',
+  recognition: 'recognition', press: 'recognition', awards: 'recognition', publications: 'recognition' };
 export function parse(raw, title) {
-  const text = [...raw.matchAll(/\[et_pb_text[^\]]*\]([\s\S]*?)\[\/et_pb_text\]/g)].map(m => m[1]).join('\n');
-  const body = text || raw.replace(/\[[^\]]+\]/g, '');
-  const iCred = body.search(/CREDITS|COLLABORATORS/i);
-  const iRec = body.search(/RECOGNITION|PRESS\s*<\/strong>/i);
-  const cut = [iCred, iRec].filter(i => i >= 0);
-  const descHtml = cut.length ? body.slice(0, Math.min(...cut)) : body;
-  const description = lines(descHtml.replace(/<strong>[^<]*$/i, ''))
-    .filter(l => l.toLowerCase() !== title.toLowerCase() && !/^(credits|recognition|collaborators)$/i.test(l));
+  raw = raw.replace(/\[[^\]]*\]/g, tag => tag.replace(/&#82(?:20|21|42|43);|&quot;|[“”″′]/g, '"'));
+  const blocks = [...raw.matchAll(/\[et_pb_text[^\]]*\]([\s\S]*?)\[\/et_pb_text\]/g)].map(m => m[1]);
+  if (!blocks.length) blocks.push(raw.replace(/\[[^\]]+\]/g, ''));
 
-  const credHtml = iCred >= 0 ? body.slice(iCred, iRec > iCred ? iRec : undefined) : '';
-  const collaborators = lines(credHtml).map(l => {
-    const m = l.match(/^([^:]+):\s*(.+)$/);
-    return m ? { name: m[2].trim(), role: m[1].trim() } : null;
-  }).filter(Boolean);
-
-  const recHtml = iRec >= 0 ? body.slice(iRec) : '';
-  const recognition = [];
-  for (const seg of recHtml.split(/<br\s*\/?>|<\/p>/i)) {
-    const a = seg.match(/<a[^>]+href="([^"]+)"[^>]*>([\s\S]*?)<\/a>/i);
-    const name = strip(a ? a[2] : seg);
-    if (!name || /^recognition$/i.test(name)) continue;
-    recognition.push(a ? { name, url: decode(a[1]) } : { name });
+  const out = { description: [], collaborators: [], recognition: [], location: '' };
+  for (const block of blocks) {
+    let section = 'desc';
+    const segs = block.replace(/<\/p>|<\/h\d>|<\/li>|<\/div>/gi, '$&\n').split(/<br\s*\/?>|\n/i);
+    for (const seg of segs) {
+      const plain = strip(seg);
+      if (!plain) continue;
+      const lab = plain.match(LABEL);
+      // a label is a short line on its own ("CREDITS") or a label with its value ("Location: Palo Alto")
+      if (lab && (lab[2] === '' || /:/.test(plain)) && plain.length < 80) {
+        section = SECTION[lab[1].toLowerCase()];
+        if (!lab[2]) continue;
+      }
+      const text = lab && /:/.test(plain) && SECTION[lab[1].toLowerCase()] === section ? lab[2] : plain;
+      if (section === 'desc') {
+        if (text.toLowerCase() !== title.toLowerCase()) out.description.push(text);
+      } else if (section === 'location') {
+        if (!out.location) out.location = text;
+      } else if (section === 'credits') {
+        const m = text.match(/^([^:]{2,40}):\s*(.+)$/);
+        out.collaborators.push(m ? { name: m[2].trim(), role: m[1].trim() } : { name: text, role: '' });
+      } else {
+        const a = seg.match(/<a[^>]+href="([^"]+)"[^>]*>([\s\S]*?)<\/a>/i);
+        const name = strip(a ? a[2] : seg);
+        if (name) out.recognition.push(a ? { name, url: decode(a[1]) } : { name });
+      }
+    }
   }
-
-  const galleryIds = [...raw.matchAll(/gallery_ids="([\d,\s]+)"/g)].flatMap(m => m[1].split(',').map(s => +s.trim()).filter(Boolean));
+  // paragraphs: merge lines that the old site broke with <br> mid-paragraph is not attempted; each <p> stays a paragraph
+  const galleryIds = [...raw.matchAll(/gallery_ids="([\d,\s]+)"/g)].flatMap(m => m[1].split(',').map(x => +x.trim()).filter(Boolean));
   let imageSrcs = [...raw.matchAll(/\[et_pb_image[^\]]*\bsrc="([^"]+)"/g)].map(m => m[1]);
-  // already-rendered pages: take every uploaded image in the markup, at full size
   if (!galleryIds.length && !imageSrcs.length) {
     imageSrcs = [...new Set([...raw.matchAll(/<(?:img|a)\b[^>]*(?:src|href)="([^"]+\/wp-content\/uploads\/[^"]+\.(?:jpe?g|png|webp))"/gi)]
       .map(m => m[1].replace(/-\d+x\d+(\.\w+)$/, '$1')))];
   }
-  return { description, collaborators, recognition, galleryIds, imageSrcs };
+  return { ...out, galleryIds, imageSrcs };
 }
 
 const asImg = m => m && ({ src: m.source_url, w: m.media_details?.width, h: m.media_details?.height, ...(m.alt_text ? { alt: m.alt_text } : {}) });
@@ -142,6 +157,7 @@ async function importProjects() {
     fill(x, 'description', r.description);
     fill(x, 'collaborators', r.collaborators);
     fill(x, 'recognition', r.recognition);
+    if (r.location && (OVERWRITE || !x.location)) x.location = r.location;
     // dimensions for hand-picked hover / home images that match a known upload
     for (const k of ['hover', 'homeImage']) {
       const m = x[k] && (x.gallery || []).find(g => same(g.src, x[k].src));
