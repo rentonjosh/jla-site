@@ -78,7 +78,9 @@ Search (header) covers projects, press, awards, events, people and pages.
 
 ## Deploying
 
-Cloudflare Pages (free, unlimited bandwidth): Workers & Pages > Create > Pages > Connect to Git, pick this repo, framework preset *None*, build command `npm run build`, output directory `dist`. Every commit deploys, and every branch gets its own preview link. Netlify works the same way. GitHub Pages does not suit this site: it caps a site at 1GB, and the photo library will be close to that.
+Cloudflare Pages (free, unlimited bandwidth): Workers & Pages > Create > Pages > Connect to Git, pick this repo, framework preset *None*, build command `npm run build`, output directory `dist`. Every commit deploys, and every branch gets its own preview link. Netlify works the same way.
+
+A staging copy also publishes to GitHub Pages on every change (`.github/workflows/preview.yml`), marked noindex so it never competes with the real site in search. It needs the repo to be public, or a paid GitHub plan once it's private; Cloudflare Pages has no such limit.
 
 Point the domain at it once the import is done and checked.
 

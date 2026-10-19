@@ -75,6 +75,7 @@ export function parse(raw, title) {
   if (!blocks.length) blocks.push(raw.replace(/\[[^\]]+\]/g, ''));
 
   const out = { description: [], collaborators: [], recognition: [], location: '' };
+  let sawTitle = false;
   for (const block of blocks) {
     let section = 'desc';
     const segs = block.replace(/<\/p>|<\/h\d>|<\/li>|<\/div>/gi, '$&\n').split(/<br\s*\/?>|\n/i);
@@ -89,12 +90,17 @@ export function parse(raw, title) {
       }
       const text = lab && /:/.test(plain) && SECTION[lab[1].toLowerCase()] === section ? lab[2] : plain;
       if (section === 'desc') {
+        // the main block opens with the page's display title in bold ("<b>McGann ORSC</b>"); the tagline after it is in <em>
+        const boldTitle = !out.description.length && !sawTitle && /^\s*(?:<p[^>]*>)?\s*<(?:b|strong|h\d)\b/i.test(seg) && !/[.!?]$/.test(text);
+        if (boldTitle) { sawTitle = true; continue; }
         if (text.toLowerCase() !== title.toLowerCase()) out.description.push(text);
       } else if (section === 'location') {
         if (!out.location) out.location = text;
       } else if (section === 'credits') {
         const m = text.match(/^([^:]{2,40}):\s*(.+)$/);
-        out.collaborators.push(m ? { name: m[2].trim(), role: m[1].trim() } : { name: text, role: '' });
+        const prev = out.collaborators[out.collaborators.length - 1];
+        if (!m && prev && /^(and|&)\s/i.test(text)) prev.name += ' ' + text;          // a name that wrapped onto a second line
+        else out.collaborators.push(m ? { name: m[2].trim(), role: m[1].trim() } : { name: text, role: /photograph/i.test(text) ? 'Photography' : '' });
       } else {
         const a = seg.match(/<a[^>]+href="([^"]+)"[^>]*>([\s\S]*?)<\/a>/i);
         const name = strip(a ? a[2] : seg);

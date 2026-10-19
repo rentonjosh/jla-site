@@ -1,0 +1,39 @@
+# Publishes a staging copy of the site to GitHub Pages on every change to main.
+# Marked noindex so search engines ignore it; the real site will live on its own host and domain.
+name: Staging preview
+
+on:
+  push:
+    branches: [main]
+  workflow_run:
+    workflows: ["Import photos from WordPress"]
+    types: [completed]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Build
+        run: node build.mjs --noindex
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+      - id: deployment
+        uses: actions/deploy-pages@v4

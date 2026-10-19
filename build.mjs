@@ -7,7 +7,8 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const ROOT = path.dirname(fileURLToPath(import.meta.url));
-const DEMO = process.argv.includes('--demo');        // in-chat preview only: photos can't load there, so show a fixed orientation rhythm
+const DEMO = process.argv.includes('--demo');
+const NOINDEX = process.argv.includes('--noindex');   // staging copies: keep them out of search results        // in-chat preview only: photos can't load there, so show a fixed orientation rhythm
 const PREVIEW = DEMO || process.argv.includes('--preview');
 const OUT = path.join(ROOT, DEMO ? 'preview-demo' : PREVIEW ? 'preview' : 'dist');
 const UPLOADS = 'https://johnlumarchitecture.com/wp-content/uploads/';
@@ -84,6 +85,7 @@ const layout = ({ p, title, section, body, description, bodyClass = '', image })
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>${esc(full)}</title>
 <meta name="description" content="${esc(description || site.description)}">
+${NOINDEX ? '<meta name="robots" content="noindex, nofollow">\n' : ''}
 <link rel="canonical" href="${canonical}">
 <meta property="og:title" content="${esc(full)}">
 <meta property="og:description" content="${esc(description || site.description)}">
