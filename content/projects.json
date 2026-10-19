@@ -8,7 +8,7 @@
       "w": 2400,
       "h": 1729
     },
-    "featured": 2,
+    "featured": 1,
     "location": "Menlo Park, CA",
     "hover": {
       "src": "images/works/courtyard/2019-05-Hermosa_37_LR.jpg",
@@ -318,7 +318,7 @@
       "w": 1080,
       "h": 784
     },
-    "featured": 1,
+    "featured": 2,
     "location": "San Francisco, CA",
     "hover": {
       "src": "images/works/golden-gate/2022-05-Ortega_15_LR.jpg",
