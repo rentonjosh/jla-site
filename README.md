@@ -53,7 +53,7 @@ Desktop scrolling is weighted (it eases to a stop), and anything that starts bel
 
 Gallery rows are composed automatically from the photos' orientations: screen-sized singles, pairs, and singles set to the left or right, always in 4:3 or 3:4 boxes with the page margin as every gap.
 
-Search (header) covers projects, press, awards, events, people and pages.
+Search (header, or press `/` anywhere) opens a panel under the header over the shaded page. Before typing it shows the slideshow projects; results are grouped into Projects, People, Press and Pages and match titles, categories, locations, collaborators and publications. Arrow keys move through results, Enter opens the first, Esc or a click on the shade closes it.
 
 On project pages, clicking a photo enlarges it in place: it grows from its spot to fill the screen, uncropped, over a shaded and blurred page. Click the shaded area, press Esc or scroll to put it back. The small triangles at the sides (under the photo on phones), the arrow keys or a sideways swipe move to the next photo while enlarged.
 

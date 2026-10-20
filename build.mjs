@@ -120,17 +120,20 @@ ${image ? `<meta property="og:image" content="${esc(/^https?:/.test(image) ? ima
   <a class="wordmark" href="${href(p, '')}">${esc(site.name)}</a>
   <nav class="site-nav" aria-label="Primary">
     ${nav}
-    <div class="search" data-search>
-      <button class="search-toggle" type="button" aria-expanded="false" aria-controls="search-results">Search</button>
-      <form class="search-form" role="search" hidden>
-        <svg class="search-icon" viewBox="0 0 16 16" aria-hidden="true"><circle cx="9.5" cy="6.5" r="4.75"/><path d="M6.2 9.8 1.5 14.5"/></svg>
-        <label class="sr-only" for="search-q">Search projects, press and people</label>
-        <input id="search-q" type="search" autocomplete="off" spellcheck="false" placeholder="Search">
-      </form>
-      <div class="search-results" id="search-results" hidden><ul></ul></div>
-    </div>
+    <button class="search-toggle" type="button" aria-expanded="false" aria-controls="search-panel"><span class="st-open">Search</span><span class="st-close" aria-hidden="true">Close</span></button>
   </nav>
 </header>
+<div class="search-panel" id="search-panel" role="dialog" aria-modal="true" aria-label="Search" hidden data-search>
+  <div class="sp-shade"></div>
+  <div class="sp-sheet">
+    <form class="sp-form" role="search">
+      <label class="sr-only" for="search-q">Search projects, places, press and people</label>
+      <input id="search-q" class="sp-input" type="search" autocomplete="off" spellcheck="false" enterkeyhint="go" placeholder="Search projects, places, press, people">
+      <span class="sp-rule" aria-hidden="true"></span>
+    </form>
+    <div class="sp-results" aria-live="polite"></div>
+  </div>
+</div>
 <main id="main">
 ${body}
 </main>
@@ -336,12 +339,14 @@ for (const pg of pages) {
 
 // search index
 const index = [
-  ...projects.map(x => ({ t: x.title, k: 'Project', u: `works/${x.slug}/`, i: thumbRoot(x.hero.src), s: [x.title, catLabel(x.category), x.location, ...(x.collaborators || []).map(c => c.name)].filter(Boolean).join(' ') })),
-  ...people.map(x => ({ t: x.name, k: x.title, u: hasProfile(x) ? `contact/people/${x.slug}/` : 'contact/people/', i: thumbRoot(x.photo), s: `${x.name} ${x.title} people team` })),
+  // g: group (p projects, m people, r press, a pages); f: home slideshow order, shown before anything is typed
+  ...projects.map(x => ({ g: 'p', t: x.title, k: [catLabel(x.category), x.location].filter(Boolean).join(' · '), u: `works/${x.slug}/`, i: thumbRoot(x.hero.src), f: x.featured || 0,
+    s: [x.title, catLabel(x.category), x.location, ...(x.collaborators || []).map(c => c.name), ...(x.recognition || []).map(r => r.name)].filter(Boolean).join(' ') })),
+  ...people.map(x => ({ g: 'm', t: x.name, k: x.title, u: hasProfile(x) ? `contact/people/${x.slug}/` : 'contact/people/', i: thumbRoot(x.photo), s: `${x.name} ${x.title} people team staff` })),
   ...[...press.media.map(m => ({ ...m, k: 'Press' })), ...press.awards.map(m => ({ ...m, k: 'Award' })), ...press.events.map(m => ({ ...m, k: 'Event' }))]
-    .map(m => ({ t: m.title, k: m.k, u: m.url || 'press/', x: !!m.url, i: thumbRoot(m.image), s: `${m.title} ${m.k}` })),
-  { t: 'Services & Process', k: 'Page', u: 'contact/services/', s: 'services process fees phases schematic design permit construction' },
-  { t: 'About & Contact', k: 'Page', u: 'contact/', s: 'about contact address phone email careers jobs employment media' }
+    .map(m => ({ g: 'r', t: m.title, k: m.k, u: m.url || 'press/', x: !!m.url, i: thumbRoot(m.image), s: `${m.title} ${m.k} press publication article` })),
+  { g: 'a', t: 'Services & Process', k: 'How a project runs', u: 'contact/services/', s: 'services process fees phases schematic design permit construction' },
+  { g: 'a', t: 'About & Contact', k: 'Studio, address, email', u: 'contact/', s: 'about contact address phone email careers jobs employment media studio office' }
 ];
 await fs.mkdir(path.join(OUT, 'assets'), { recursive: true });
 await fs.writeFile(path.join(OUT, 'assets', 'search-index.js'), `window.JLA_INDEX=${JSON.stringify(index)};\n`);

@@ -329,7 +329,7 @@
       return false;
     };
     addEventListener('wheel', e => {
-      if (e.defaultPrevented || e.ctrlKey || de.classList.contains('lb-open') || Math.abs(e.deltaX) > Math.abs(e.deltaY) || scrollsItself(e.target)) return;
+      if (e.defaultPrevented || e.ctrlKey || de.classList.contains('lb-open') || de.classList.contains('sp-open') || Math.abs(e.deltaX) > Math.abs(e.deltaY) || scrollsItself(e.target)) return;
       e.preventDefault();
       if (!moving) target = cur = scrollY;
       const d = e.deltaY * (e.deltaMode === 1 ? 40 : e.deltaMode === 2 ? innerHeight : 1);
@@ -391,42 +391,96 @@
     update();
   }
 
-  /* ---------- search ---------- */
-  function search(root) {
-    const btn = root.querySelector('.search-toggle');
-    const form = root.querySelector('.search-form');
-    const input = root.querySelector('input');
-    const panel = root.querySelector('.search-results');
-    const list = panel.querySelector('ul');
-    const norm = s => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
-    const idx = (window.JLA_INDEX || []).map(x => ({ ...x, n: norm(x.t + ' ' + (x.s || '')), tn: norm(x.t) }));
-    const esc = s => s.replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
-    let results = [];
+  /* ---------- search: a panel that slides down from under the header ---------- */
+  function search(panel) {
+    const toggle = document.querySelector('.search-toggle');
+    const input = panel.querySelector('.sp-input');
+    const out = panel.querySelector('.sp-results');
+    const shade = panel.querySelector('.sp-shade');
+    const de = document.documentElement;
+    const norm = s => (s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
+    const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+    const idx = (window.JLA_INDEX || []).map(x => ({ ...x, n: norm(x.t + ' ' + (x.k || '') + ' ' + (x.s || '')), tn: norm(x.t) }));
+    const GROUPS = [['p', 'Projects', 10], ['m', 'People', 5], ['r', 'Press', 5], ['a', 'Pages', 2]];
+    let open = false, closing = 0;
 
-    const open = () => { root.classList.add('is-open'); form.hidden = false; btn.setAttribute('aria-expanded', 'true'); input.focus(); };
-    const close = () => { root.classList.remove('is-open'); form.hidden = true; panel.hidden = true; btn.setAttribute('aria-expanded', 'false'); input.value = ''; };
-    const render = () => {
-      const q = norm(input.value.trim());
-      if (!q) { panel.hidden = true; return; }
-      const terms = q.split(/\s+/);
-      const weight = { Project: 3, Page: 2 };
-      results = idx.filter(x => terms.every(t => x.n.includes(t)))
-        .map(x => ({ x, s: (x.tn.startsWith(q) ? 6 : x.tn.includes(q) ? 4 : 0) + (weight[x.k] || 1) }))
-        .sort((a, b) => b.s - a.s).slice(0, 8).map(r => r.x);
-      list.innerHTML = results.length
-        ? results.map(r => `<li><a href="${esc(link(r.u))}"${r.x ? ' target="_blank" rel="noopener"' : ''}><span class="r-thumb">${r.i ? `<img src="${esc(asset(r.i))}" alt="" loading="lazy">` : ''}</span><span class="r-title">${esc(r.t)}</span><span class="r-kind">${esc(r.k)}</span></a></li>`).join('')
-        : `<li class="r-empty">Nothing found for “${esc(input.value.trim())}”</li>`;
-      panel.hidden = false;
+    // bold the part of a title that matches what was typed
+    const mark = (t, q) => {
+      const i = q ? norm(t).indexOf(q) : -1;
+      return i < 0 ? esc(t) : esc(t.slice(0, i)) + '<mark>' + esc(t.slice(i, i + q.length)) + '</mark>' + esc(t.slice(i + q.length));
     };
-    btn.addEventListener('click', open);
+    const item = (r, q, n) => `<li style="--i:${n}"><a class="sp-item" href="${esc(link(r.u))}"${r.x ? ' target="_blank" rel="noopener"' : ''}>`
+      + (r.i ? `<span class="sp-thumb"><img src="${esc(asset(r.i))}" alt="" loading="lazy" decoding="async" onload="this.classList.add('is-loaded')"></span>` : '')
+      + `<span class="sp-title">${mark(r.t, q)}</span><span class="sp-meta">${esc(r.k || '')}${r.x ? ' ↗' : ''}</span></a></li>`;
+    const group = (label, list, q, start, text) => `<section class="sp-group"><h2 class="sp-label">${label}</h2><ul class="sp-grid${text ? ' is-text' : ''}">${list.map((r, n) => item(r, q, start + n)).join('')}</ul></section>`;
+
+    const render = () => {
+      const raw = input.value.trim(), q = norm(raw);
+      if (!q) {
+        const sel = idx.filter(x => x.f).sort((a, b) => a.f - b.f).slice(0, 10);
+        out.innerHTML = group('Selected projects', sel, '', 0) + '<p class="sp-hint">Type a project, a city, a collaborator or a publication. <kbd>↓</kbd> to move through results, <kbd>esc</kbd> to close.</p>';
+        return;
+      }
+      const terms = q.split(/\s+/);
+      const scored = idx.filter(x => terms.every(t => x.n.includes(t))).map(x => ({ x,
+        s: (x.tn === q ? 20 : x.tn.startsWith(q) ? 12 : x.tn.split(/\s+/).some(w => w.startsWith(q)) ? 8 : x.tn.includes(q) ? 5 : 0) + (x.f ? 1 : 0) }))
+        .sort((a, b) => b.s - a.s);
+      let n = 0, html = '';
+      for (const [g, label, max] of GROUPS) {
+        const list = scored.filter(r => r.x.g === g).slice(0, max).map(r => r.x);
+        if (list.length) { html += group(label, list, q, n, g === 'a'); n += list.length; }
+      }
+      out.innerHTML = html || `<p class="sp-empty">Nothing matches “${esc(raw)}”. Try a project name, a city such as Palo Alto, or a publication such as Dwell.</p>`;
+    };
+
+    const lock = on => {
+      const sb = innerWidth - de.clientWidth;
+      de.classList.toggle('sp-open', on);
+      document.body.style.paddingRight = on && sb > 0 ? sb + 'px' : '';
+      const h = document.querySelector('.site-header');
+      if (h) h.style.paddingRight = on && sb > 0 ? `calc(var(--gutter) + ${sb}px)` : '';
+    };
+    const show = () => {
+      if (open) return;
+      clearTimeout(closing);
+      open = true; panel.hidden = false; lock(true);
+      toggle.setAttribute('aria-expanded', 'true');
+      render();
+      requestAnimationFrame(() => requestAnimationFrame(() => panel.classList.add('is-open')));
+      input.focus({ preventScroll: true });
+    };
+    const hide = () => {
+      if (!open) return;
+      open = false; panel.classList.remove('is-open');
+      toggle.setAttribute('aria-expanded', 'false');
+      closing = setTimeout(() => { panel.hidden = true; lock(false); input.value = ''; }, reduce ? 0 : 560);
+      toggle.focus({ preventScroll: true });
+    };
+
+    toggle.addEventListener('click', () => open ? hide() : show());
+    shade.addEventListener('click', hide);
     input.addEventListener('input', render);
-    form.addEventListener('submit', e => {
+    panel.querySelector('.sp-form').addEventListener('submit', e => {
       e.preventDefault();
-      const r = results[0];
-      if (r) r.x ? window.open(link(r.u), '_blank', 'noopener') : (location.href = link(r.u));
+      const first = out.querySelector('.sp-item');
+      if (first) first.click();
     });
-    document.addEventListener('keydown', e => { if (e.key === 'Escape' && root.classList.contains('is-open')) { close(); btn.focus(); } });
-    document.addEventListener('pointerdown', e => { if (root.classList.contains('is-open') && !root.contains(e.target)) close(); });
+    // keyboard: arrows move through results in reading order, esc closes, "/" opens from anywhere
+    document.addEventListener('keydown', e => {
+      if (!open) {
+        if (e.key === '/' && !e.target.closest('input, textarea, [contenteditable]')) { e.preventDefault(); show(); }
+        return;
+      }
+      if (e.key === 'Escape') { e.preventDefault(); hide(); return; }
+      if (e.key !== 'ArrowDown' && e.key !== 'ArrowUp') return;
+      const items = [...out.querySelectorAll('.sp-item')];
+      if (!items.length) return;
+      e.preventDefault();
+      const k = items.indexOf(document.activeElement);
+      if (e.key === 'ArrowDown') (items[k + 1] || items[0]).focus();
+      else if (k <= 0) input.focus();
+      else items[k - 1].focus();
+    });
   }
 
   document.querySelectorAll('[data-slideshow]').forEach(slideshow);
