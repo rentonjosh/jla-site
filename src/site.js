@@ -6,19 +6,28 @@
   const asset = s => !s ? '' : /^https?:\/\//.test(s) ? s : J.root + s;
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  /* ---------- images: fade in on load, hide if broken, settle orientation ---------- */
+  /* ---------- images: fade in once fully decoded, hide if broken, settle orientation ----------
+     The photos are progressive JPEGs. The fade waits for decode() so a photo never shows a coarse
+     first pass, or an undecoded blank frame, partway through its fade. */
+  const done = (im, cls) => { im.classList.add(cls); im.dispatchEvent(new Event('settled')); };
+  const settling = new WeakSet();   // not a data attribute: slideshow clones would copy it
   const settle = im => {
-    if (!im.naturalWidth) { im.classList.add('is-broken'); return; }
-    im.classList.add('is-loaded');
+    if (im.classList.contains('is-loaded') || settling.has(im)) return;
+    if (!im.naturalWidth) { done(im, 'is-broken'); return; }
     const box = im.closest('[data-orient="auto"]');
     if (box && !im.classList.contains('card-hover')) {
       box.dataset.orient = im.naturalHeight > im.naturalWidth * 1.02 ? 'portrait' : 'landscape';
       box.dispatchEvent(new CustomEvent('orient', { bubbles: true }));
     }
+    settling.add(im);
+    (im.decode ? im.decode() : Promise.resolve()).catch(() => {}).then(() => { settling.delete(im); done(im, 'is-loaded'); });
   };
+  // resolves when a photo has faded in or failed; never waits more than 4s
+  const ready = im => im.classList.contains('is-loaded') || im.classList.contains('is-broken') ? Promise.resolve()
+    : new Promise(r => { im.addEventListener('settled', r, { once: true }); setTimeout(r, 4000); });
   document.querySelectorAll('img').forEach(im => { if (im.complete && im.src) settle(im); });
   document.addEventListener('load', e => { if (e.target.tagName === 'IMG') settle(e.target); }, true);
-  document.addEventListener('error', e => { if (e.target.tagName === 'IMG') e.target.classList.add('is-broken'); }, true);
+  document.addEventListener('error', e => { if (e.target.tagName === 'IMG') done(e.target, 'is-broken'); }, true);
 
   /* ---------- home slideshow: transform track, eased motion, loops ---------- */
   function slideshow(root) {
@@ -145,7 +154,9 @@
     measure();
     pos = target = centers[n];
     render(); caption();
-    requestAnimationFrame(() => root.classList.add('is-ready'));
+    // the track fades in once, after the photos in view have decoded, so the boxes never fade in empty
+    const inView = all.filter(li => { const r = li.getBoundingClientRect(); return r.right > 0 && r.left < innerWidth; });
+    Promise.all(inView.flatMap(li => [...li.querySelectorAll('img')]).map(ready)).then(() => root.classList.add('is-ready'));
   }
 
   /* ---------- works: shortest-column masonry, keeps reading order ---------- */
@@ -357,12 +368,16 @@
   function reveal() {
     if (reduce || !('IntersectionObserver' in window)) return;
     const els = [...document.querySelectorAll('.card, .gallery-row figure, .press-grid > li, .people-grid > li, .statement > *, .p-intro, .p-more-head, .phase')];
+    // an element holding photos rises only once they have decoded: one motion, never an empty box first
     const io = new IntersectionObserver(entries => {
       let n = 0;
       entries.filter(en => en.isIntersecting).sort((a, b) => a.boundingClientRect.left - b.boundingClientRect.left).forEach(en => {
-        en.target.style.setProperty('--rv-delay', `${Math.min(n++, 4) * 90}ms`);
-        en.target.classList.add('in');
-        io.unobserve(en.target);
+        const el = en.target, t = performance.now(), delay = Math.min(n++, 4) * 90;
+        io.unobserve(el);
+        Promise.all([...el.querySelectorAll('img:not(.card-hover)')].map(ready)).then(() => {
+          el.style.setProperty('--rv-delay', `${performance.now() - t > 120 ? 0 : delay}ms`);
+          el.classList.add('in');
+        });
       });
     }, { rootMargin: '0px 0px -8% 0px', threshold: .01 });
     els.forEach(el => {
@@ -383,7 +398,8 @@
       raf = 0;
       const h = hero.offsetHeight || 1;
       const p = Math.min(1, Math.max(0, scrollY / h));
-      if (!reduce && heroImg) { heroImg.style.transform = `scale(${(1 + p * .06).toFixed(4)})`; heroImg.style.opacity = (1 - p * .35).toFixed(3); }
+      // scroll drives custom properties, not the photo's own opacity, so the photo's load fade is never overridden
+      if (!reduce && heroImg) { hero.style.setProperty('--hs', (1 + p * .06).toFixed(4)); hero.style.setProperty('--ho', (1 - p * .35).toFixed(3)); }
       bar.classList.toggle('is-stuck', bar.getBoundingClientRect().top <= parseFloat(getComputedStyle(bar).top) + .5 && scrollY > 4);
     };
     addEventListener('scroll', () => { if (!raf) raf = requestAnimationFrame(update); }, { passive: true });
