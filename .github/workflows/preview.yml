@@ -32,6 +32,9 @@ jobs:
           node-version: 20
       - name: Build
         run: node build.mjs --noindex
+      # pared-back copy (cover photos only, no Contact or People) served at /draft/
+      - name: Build pared-back copy
+        run: node build.mjs --shell && mv shell dist/draft
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist

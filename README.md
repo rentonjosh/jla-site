@@ -30,6 +30,7 @@ npm run build          # -> dist/  (clean URLs, what you deploy)
 npm run serve          # look at dist/ on http://localhost:3000
 npm run preview        # -> preview/  (links end in index.html, opens straight from disk)
 node build.mjs --demo  # -> preview-demo/  fixed 4:3 / 3:4 rhythm for previews where photos can't load
+node build.mjs --shell # -> shell/  pared-back copy: cover photos only, gallery and press frames blank, no Contact/People/Services
 npm run import         # fill every project's gallery, text, credits and image sizes from WordPress
 npm run import:images  # same, plus copy every photo into images/ (do this before WordPress is turned off)
 npm run photos         # all of it in one go: install, import + copy photos, build dist/ and preview/
@@ -88,7 +89,7 @@ On project pages, clicking a photo enlarges it in place: it grows from its spot 
 
 Cloudflare Pages (free, unlimited bandwidth): Workers & Pages > Create > Pages > Connect to Git, pick this repo, framework preset *None*, build command `npm run build`, output directory `dist`. Every commit deploys, and every branch gets its own preview link. Netlify works the same way.
 
-A staging copy also publishes to GitHub Pages on every change (`.github/workflows/preview.yml`), marked noindex so it never competes with the real site in search. It needs the repo to be public, or a paid GitHub plan once it's private; Cloudflare Pages has no such limit.
+A staging copy also publishes to GitHub Pages on every change (`.github/workflows/preview.yml`), marked noindex so it never competes with the real site in search. The pared-back `--shell` copy publishes beside it at `/draft/`. It needs the repo to be public, or a paid GitHub plan once it's private; Cloudflare Pages has no such limit.
 
 Point the domain at it once the import is done and checked.
 

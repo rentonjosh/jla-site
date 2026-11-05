@@ -1,6 +1,8 @@
 // JLA static site generator. No framework, no dependencies.
 //   node build.mjs            -> dist/     clean URLs (works/golden-gate/), for any static host
 //   node build.mjs --preview  -> preview/  explicit index.html links, opens straight from disk
+//   node build.mjs --shell    -> shell/    a pared-back copy: cover photos only (gallery and press frames left
+//                                         blank), no Contact, People or Services pages, only the photos it shows
 import fs from 'node:fs/promises';
 import { existsSync, readFileSync } from 'node:fs';
 import path from 'node:path';
@@ -9,9 +11,11 @@ import { createHash } from 'node:crypto';
 
 const ROOT = path.dirname(fileURLToPath(import.meta.url));
 const DEMO = process.argv.includes('--demo');
-const NOINDEX = process.argv.includes('--noindex');   // staging copies: keep them out of search results        // in-chat preview only: photos can't load there, so show a fixed orientation rhythm
+const SHELL = process.argv.includes('--shell');
+const NOINDEX = SHELL || process.argv.includes('--noindex');   // staging copies: keep them out of search results        // in-chat preview only: photos can't load there, so show a fixed orientation rhythm
 const PREVIEW = DEMO || process.argv.includes('--preview');
-const OUT = path.join(ROOT, DEMO ? 'preview-demo' : PREVIEW ? 'preview' : 'dist');
+const OUT = path.join(ROOT, SHELL ? 'shell' : DEMO ? 'preview-demo' : PREVIEW ? 'preview' : 'dist');
+const USED = new Set();   // --shell: local photos the pages actually show, so only those are copied
 const UPLOADS = 'https://johnlumarchitecture.com/wp-content/uploads/';
 // changes whenever the stylesheet, script or content changes, so browsers never keep a stale copy
 const VERSION = createHash('sha1').update(
@@ -53,6 +57,7 @@ const img = (from, im, { alt = '', cls = '', lazy = true, priority = false, hidd
   if (!im) return '';
   const o = typeof im === 'string' ? { src: im } : im;
   if (!o.src) return '';
+  if (o.src.startsWith('images/')) USED.add(o.src);
   const big = o.w && o.h ? Math.max(o.w, o.h) : 2400;
   const set = hasSmall(o.src) ? ` srcset="${esc(src(from, small(o.src)))} 1200w, ${esc(src(from, o.src))} ${big}w" sizes="${SIZES[sizes] || sizes}"` : '';
   const dims = o.w && o.h ? ` width="${o.w}" height="${o.h}"` : '';
@@ -85,7 +90,7 @@ const pages = [];
 const page = (p, title, section, body, opts = {}) => pages.push({ p, title, section, body, ...opts });
 
 const layout = ({ p, title, section, body, description, bodyClass = '', image }) => {
-  const nav = [['works', 'Works'], ['press', 'Press'], ['contact', 'Contact']]
+  const nav = [['works', 'Works'], ['press', 'Press'], ...(SHELL ? [] : [['contact', 'Contact']])]
     .map(([k, l]) => `<a href="${href(p, k)}"${section === k ? ' aria-current="page"' : ''}>${l}</a>`).join('');
   const logo = site.logo
     ? `<img src="${esc(file(p, site.logo))}" alt="" width="3063" height="848">`
@@ -127,8 +132,8 @@ ${image ? `<meta property="og:image" content="${esc(/^https?:/.test(image) ? ima
   <div class="sp-shade"></div>
   <div class="sp-sheet">
     <form class="sp-form" role="search">
-      <label class="sr-only" for="search-q">Search projects, places, press and people</label>
-      <input id="search-q" class="sp-input" type="search" autocomplete="off" spellcheck="false" enterkeyhint="go" placeholder="Search projects, places, press, people">
+      <label class="sr-only" for="search-q">Search projects, places, press${SHELL ? '' : ' and people'}</label>
+      <input id="search-q" class="sp-input" type="search" autocomplete="off" spellcheck="false" enterkeyhint="go" placeholder="Search projects, places, press${SHELL ? '' : ', people'}">
       <span class="sp-rule" aria-hidden="true"></span>
     </form>
     <div class="sp-results" aria-live="polite"></div>
@@ -168,8 +173,8 @@ ${featured.map((x, i) => {
 <section class="statement" aria-label="The studio">
   <p class="statement-text">${esc(site.statement)}</p>
   <ul class="statement-index">${cats.map(c => `<li><a href="${href('', catPath(c.key))}">${esc(c.label)}</a></li>`).join('')}</ul>
-  <p class="statement-more"><a href="${href('', 'contact')}">About the studio</a></p>
-</section>`, { bodyClass: 'is-home', image: srcRoot(featured[0].hero.src) });
+${SHELL ? '' : `  <p class="statement-more"><a href="${href('', 'contact')}">About the studio</a></p>
+`}</section>`, { bodyClass: 'is-home', image: srcRoot(featured[0].hero.src) });
 
 /* ---------- works ---------- */
 const workTabs = cats.map(c => [catPath(c.key), c.label]);
@@ -206,7 +211,7 @@ const composeRows = list => {
   return rows;
 };
 const card = (from, x, i, { forceLandscape = false } = {}) => {
-  const hover = x.hover || null;
+  const hover = SHELL ? null : x.hover || null;
   const hero = forceLandscape ? { ...x.hero, orientation: 'landscape' }
     : x.heroAspect ? { ...x.hero, orientation: x.heroAspect < 1 ? 'portrait' : 'landscape' } : x.hero;
   return `<a class="card${hover ? ' has-hover' : ''}" href="${href(from, 'works/' + x.slug)}"${box(hero, i % 4 === 1 ? 'portrait' : 'landscape')}>
@@ -249,7 +254,8 @@ ${lead ? `      <p class="p-lead">${esc(lead)}</p>\n` : ''}      <div class="p-c
     </section>
 ${rows.length ? `    <section class="gallery" id="photos" aria-label="Photos">
 ${rows.map(r => `      <div class="gallery-row is-${r.kind}${r.side ? ' is-' + r.side : ''}">${r.items.map(g =>
-    `<figure${box(g, DEMO_GALLERY[gallery.indexOf(g) % DEMO_GALLERY.length])}>${zoom(p, g, img(p, g, { alt: g.alt || x.title, sizes: r.kind === 'pair' ? 'half' : 'full' }), g.alt || x.title)}</figure>`).join('')}</div>`).join('\n')}
+    SHELL ? `<figure${box(g, 'landscape')} aria-hidden="true"></figure>`   // blank frame, same size as the photo
+      : `<figure${box(g, DEMO_GALLERY[gallery.indexOf(g) % DEMO_GALLERY.length])}>${zoom(p, g, img(p, g, { alt: g.alt || x.title, sizes: r.kind === 'pair' ? 'half' : 'full' }), g.alt || x.title)}</figure>`).join('')}</div>`).join('\n')}
     </section>\n` : ''}${more.length ? `    <section class="p-more">
       <header class="p-more-head"><h2>More ${esc(catLabel(x.category))}</h2><a href="${href(p, catPath(x.category))}">All ${esc(catLabel(x.category))}</a></header>
       <div class="more-grid">${more.map((m, n) => card(p, m, n, { forceLandscape: true })).join('')}</div>
@@ -263,7 +269,7 @@ workPages.forEach(f => f());
 const pressTabs = [['press', 'Media'], ['press/awards', 'Awards'], ['press/events', 'Events']];
 const pressGrid = (p, items, cta) => `<ul class="press-grid">
 ${items.map((m, i) => {
-  const inner = `<span class="press-media">${img(p, m.image, { alt: m.title, lazy: i > 5, sizes: 'card' })}<span class="press-cta" aria-hidden="true">${cta} <span class="arrow">↗</span></span></span><span class="press-title">${esc(m.title)}</span>`;
+  const inner = `<span class="press-media">${SHELL ? '' : img(p, m.image, { alt: m.title, lazy: i > 5, sizes: 'card' })}<span class="press-cta" aria-hidden="true">${cta} <span class="arrow">↗</span></span></span><span class="press-title">${esc(m.title)}</span>`;
   return `  <li>${m.url ? `<a class="press-card" href="${esc(m.url)}" target="_blank" rel="noopener">${inner}</a>` : `<div class="press-card is-static">${inner}</div>`}</li>`;
 }).join('\n')}
 </ul>`;
@@ -272,6 +278,8 @@ page('press/awards', 'Awards', 'press', `${head('press/awards', 'Press', pressTa
 page('press/events', 'Events', 'press', `${head('press/events', 'Press', pressTabs, 'Press sections')}\n${pressGrid('press/events', press.events, 'View Event')}`);
 
 /* ---------- contact ---------- */
+const hasProfile = x => x.profile !== false;
+if (!SHELL) {
 const contactTabs = [['contact', 'About'], ['contact/people', 'People'], ['contact/services', 'Services']];
 page('contact', 'Contact', 'contact', `${head('contact', 'Contact', contactTabs, 'Contact sections')}
 <div class="split">
@@ -283,7 +291,6 @@ page('contact', 'Contact', 'contact', `${head('contact', 'Contact', contactTabs,
   <figure class="split-aside">${img('contact', site.officePhoto, { lazy: false })}</figure>
 </div>`, { description: `${site.name}, ${site.address.join(', ')}. ${site.contacts[0].value}.` });
 
-const hasProfile = x => x.profile !== false;
 page('contact/people', 'People', 'contact', `${head('contact/people', 'Contact', contactTabs, 'Contact sections')}
 <ul class="people-grid">
 ${people.map((x, i) => {
@@ -323,6 +330,7 @@ ${services.phases.map((ph, i) => `  <li class="phase">
     <div class="phase-tasks"><h3>Tasks</h3><ul>${ph.tasks.map(t => `<li>${esc(t)}</li>`).join('')}</ul>${ph.required ? `<h3>Required</h3><ul>${ph.required.map(t => `<li>${esc(t)}</li>`).join('')}</ul>` : ''}</div>
   </li>`).join('\n')}
 </ol>`, { description: services.intro });
+}
 
 /* ---------- 404 ---------- */
 page('404', 'Not found', '', `<div class="notfound"><h1 class="page-title">This page has moved.</h1><p><a href="${href('404', 'works')}">See selected works</a> or <a href="${href('404', '')}">return home</a>.</p></div>`);
@@ -342,22 +350,31 @@ const index = [
   // g: group (p projects, m people, r press, a pages); f: home slideshow order, shown before anything is typed
   ...projects.map(x => ({ g: 'p', t: x.title, k: [catLabel(x.category), x.location].filter(Boolean).join(' · '), u: `works/${x.slug}/`, i: thumbRoot(x.hero.src), f: x.featured || 0,
     s: [x.title, catLabel(x.category), x.location, ...(x.collaborators || []).map(c => c.name), ...(x.recognition || []).map(r => r.name)].filter(Boolean).join(' ') })),
-  ...people.map(x => ({ g: 'm', t: x.name, k: x.title, u: hasProfile(x) ? `contact/people/${x.slug}/` : 'contact/people/', i: thumbRoot(x.photo), s: `${x.name} ${x.title} people team staff` })),
+  ...(SHELL ? [] : people).map(x => ({ g: 'm', t: x.name, k: x.title, u: hasProfile(x) ? `contact/people/${x.slug}/` : 'contact/people/', i: thumbRoot(x.photo), s: `${x.name} ${x.title} people team staff` })),
   ...[...press.media.map(m => ({ ...m, k: 'Press' })), ...press.awards.map(m => ({ ...m, k: 'Award' })), ...press.events.map(m => ({ ...m, k: 'Event' }))]
-    .map(m => ({ g: 'r', t: m.title, k: m.k, u: m.url || 'press/', x: !!m.url, i: thumbRoot(m.image), s: `${m.title} ${m.k} press publication article` })),
+    .map(m => ({ g: 'r', t: m.title, k: m.k, u: m.url || 'press/', x: !!m.url, i: SHELL ? '' : thumbRoot(m.image), s: `${m.title} ${m.k} press publication article` })),
+  ...(SHELL ? [] : [
   { g: 'a', t: 'Services & Process', k: 'How a project runs', u: 'contact/services/', s: 'services process fees phases schematic design permit construction' },
-  { g: 'a', t: 'About & Contact', k: 'Studio, address, email', u: 'contact/', s: 'about contact address phone email careers jobs employment media studio office' }
+  { g: 'a', t: 'About & Contact', k: 'Studio, address, email', u: 'contact/', s: 'about contact address phone email careers jobs employment media studio office' }])
 ];
+// search thumbnails are photos too
+if (SHELL) index.forEach(e => { if (e.i && e.i.startsWith('images/')) USED.add(e.i.replace(/-1200(\.\w+)$/, '$1')); });
 await fs.mkdir(path.join(OUT, 'assets'), { recursive: true });
 await fs.writeFile(path.join(OUT, 'assets', 'search-index.js'), `window.JLA_INDEX=${JSON.stringify(index)};\n`);
 for (const f of await fs.readdir(path.join(ROOT, 'src'))) {
   if (f === 'images') continue;
   await fs.copyFile(path.join(ROOT, 'src', f), path.join(OUT, 'assets', f));
 }
-if (existsSync(path.join(ROOT, 'images'))) await fs.cp(path.join(ROOT, 'images'), path.join(OUT, 'images'), { recursive: true });
+if (SHELL) {
+  for (const f of USED) for (const g of [f, small(f)]) {
+    if (!g || !existsSync(path.join(ROOT, g))) continue;
+    await fs.mkdir(path.dirname(path.join(OUT, g)), { recursive: true });
+    await fs.copyFile(path.join(ROOT, g), path.join(OUT, g));
+  }
+} else if (existsSync(path.join(ROOT, 'images'))) await fs.cp(path.join(ROOT, 'images'), path.join(OUT, 'images'), { recursive: true });
 
 // redirects from the WordPress URLs (Netlify / Cloudflare Pages format)
-if (!PREVIEW) {
+if (!PREVIEW && !SHELL) {
   const r = [
     ...projects.map(x => `/project/${x.slug}/  /works/${x.slug}/  301`),
     '/live/  /works/  301', '/work/  /works/commercial/  301', '/make/  /works/fabrication/  301',
