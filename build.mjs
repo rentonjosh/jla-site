@@ -57,7 +57,7 @@ const img = (from, im, { alt = '', cls = '', lazy = true, priority = false, hidd
   const set = hasSmall(o.src) ? ` srcset="${esc(src(from, small(o.src)))} 1200w, ${esc(src(from, o.src))} ${big}w" sizes="${SIZES[sizes] || sizes}"` : '';
   const dims = o.w && o.h ? ` width="${o.w}" height="${o.h}"` : '';
   const c = [cls, hidden || cls.includes('card-img') ? '' : 'fade'].filter(Boolean).join(' ');
-  return `<img${c ? ` class="${c}"` : ''} src="${esc(src(from, o.src))}" alt="${hidden ? '' : esc(o.alt ?? alt)}"${dims}${lazy ? ' loading="lazy"' : ''}${priority ? ' fetchpriority="high"' : ''} decoding="async"${set}${hidden ? ' aria-hidden="true"' : ''}>`;
+  return `<img${c ? ` class="${c}"` : ''} src="${esc(src(from, o.src))}" alt="${hidden ? '' : esc(o.alt ?? alt)}"${dims}${lazy ? ' loading="lazy"' : ''}${priority ? ' fetchpriority="high"' : ''} decoding="sync"${set}${hidden ? ' aria-hidden="true"' : ''}>`;
 };
 // Every photo box is exactly 4:3 or 3:4. Orientation comes from an explicit "orientation" field, else the
 // photo's recorded size, else the browser decides when the photo loads (data-orient="auto").

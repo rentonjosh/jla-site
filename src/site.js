@@ -8,7 +8,9 @@
 
   /* ---------- images: fade in once fully decoded, hide if broken, settle orientation ----------
      The photos are progressive JPEGs. The fade waits for decode() so a photo never shows a coarse
-     first pass, or an undecoded blank frame, partway through its fade. */
+     first pass, or an undecoded blank frame, partway through its fade. Photos are also marked
+     decoding="sync" (build.mjs): Safari decodes large images asynchronously when it repaints them,
+     which it does when a fade ends, and that showed as a blank flash just before the photo settled. */
   const done = (im, cls) => { im.classList.add(cls); im.dispatchEvent(new Event('settled')); };
   const settling = new WeakSet();   // not a data attribute: slideshow clones would copy it
   const settle = im => {
@@ -20,7 +22,7 @@
       box.dispatchEvent(new CustomEvent('orient', { bubbles: true }));
     }
     settling.add(im);
-    (im.decode ? im.decode() : Promise.resolve()).catch(() => {}).then(() => { settling.delete(im); done(im, 'is-loaded'); });
+    Promise.race([im.decode ? im.decode().catch(() => {}) : 0, new Promise(r => setTimeout(r, 1500))]).then(() => { settling.delete(im); done(im, 'is-loaded'); });
   };
   // resolves when a photo has faded in or failed; never waits more than 4s
   const ready = im => im.classList.contains('is-loaded') || im.classList.contains('is-broken') ? Promise.resolve()
